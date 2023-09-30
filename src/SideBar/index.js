@@ -50,26 +50,20 @@ export default function SideBar() {
       <ScrollArea scrollbarSize={10} scrollHideDelay={10}>
         <Container>
           <div className="item">
-            <AiFillHome className="Menu-Icon" style={{ paddingTop: "4px" }} />
+            <AiFillHome className="Menu-Icon" />
             Home
           </div>
           <div className="item">
-            <MdOutlineSubscriptions
-              className="Menu-Icon"
-              style={{ paddingTop: "4px" }}
-            />
+            <MdOutlineSubscriptions className="Menu-Icon" />
             Subscriptions
           </div>
           <Divider mt="6px" mb="6px" />
           <div className="item">
-            <MdOutlineVideoLibrary
-              className="Menu-Icon"
-              style={{ paddingTop: "4px" }}
-            />
+            <MdOutlineVideoLibrary className="Menu-Icon" />
             Library
           </div>
           <div className="item">
-            <GoHistory className="Menu-Icon" style={{ paddingTop: "4px" }} />
+            <GoHistory className="Menu-Icon" />
             History
           </div>
           <Divider mt="6px" mb="6px" />
@@ -105,42 +99,33 @@ export default function SideBar() {
             Explore
           </Title>
           <div className="item">
-            <MdOutlineLocalFireDepartment
-              className="Menu-Icon"
-              style={{ paddingTop: "4px" }}
-            />
+            <MdOutlineLocalFireDepartment className="Menu-Icon" />
             Trading
           </div>
           <div className="item">
-            <IoMusicalNoteOutline
-              className="Menu-Icon"
-              style={{ paddingTop: "4px" }}
-            />
+            <IoMusicalNoteOutline className="Menu-Icon" />
             Music
           </div>
           <div className="item">
-            <GoTrophy className="Menu-Icon" style={{ paddingTop: "4px" }} />
+            <GoTrophy className="Menu-Icon" />
             Sports
           </div>
           <div className="item">
-            <SiYoutubegaming
-              className="Menu-Icon"
-              style={{ paddingTop: "4px" }}
-            />
+            <SiYoutubegaming className="Menu-Icon" />
             Gaming
           </div>
           <div className="item">
-            <ImNewspaper className="Menu-Icon" style={{ paddingTop: "4px" }} />
+            <ImNewspaper className="Menu-Icon" />
             News
           </div>
           <hr className="hr" />
           <div className="item">
-            <GrAddCircle className="Menu-Icon" style={{ paddingTop: "4px" }} />
+            <GrAddCircle className="Menu-Icon" />
             Browser Channel
           </div>
           <hr className="hr" />
           <div className="title">
-            <Title order={5} style={{ paddingLeft: "12px" }}>
+            <Title order={5} style={{ paddingLeft: "6px" }}>
               More from YouTube
             </Title>
           </div>
@@ -151,9 +136,9 @@ export default function SideBar() {
                   <Image
                     src="https://static.vecteezy.com/system/resources/thumbnails/024/983/601/small/youtube-logo-transparent-free-png.png"
                     alt="YouTube Premium Logo"
-                    width="19px"
+                    width="24px"
                     height="22px"
-                    style={{ paddingLeft: "0px" }}
+                    style={{ paddingLeft: "2px", paddingRight: "14px" }}
                   />
                   YouTube Premium
                 </Group>
@@ -162,18 +147,15 @@ export default function SideBar() {
           </div>
           <hr className="hr" />
           <div className="item">
-            <IoSettingsOutline
-              className="Menu-Icon"
-              style={{ paddingTop: "4px" }}
-            />
+            <IoSettingsOutline className="Menu-Icon" />
             Settings
           </div>
           <div className="item">
-            <PiFlagThin className="Menu-Icon" style={{ paddingTop: "4px" }} />
+            <PiFlagThin className="Menu-Icon" />
             Report
           </div>
           <div className="item">
-            <GoReport className="Menu-Icon" style={{ paddingTop: "4px" }} />
+            <GoReport className="Menu-Icon" />
             Help
           </div>
           <Space h="20px" />

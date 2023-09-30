@@ -8,14 +8,13 @@
   flex: 1;
   background-color: rgb(254, 254, 254);
   height: 100vh;
-  color: rgb(51, 51, 51);
+
   position: sticky;
 }
 
 .item {
-  padding: 10px 12px;
+  padding: 18px 12px;
   margin: 3px;
-  size: 20px;
   font-family: "Roboto", sans-serif;
   /* width: 200px; */
   height: 20px;
@@ -25,11 +24,19 @@
   align-items: center;
 }
 
-.item.Menu-Icon {
-  color: #030303;
+.Menu-Icon {
+  width: 26px;
+  height: 26px;
   text-align: start;
   margin-bottom: 0.25rem;
   margin-right: 1rem;
+  padding-top: 4px;
+}
+
+.Login-Icon {
+  width: 24px;
+  height: 24px;
+  color: #000;
 }
 
 .item:hover {

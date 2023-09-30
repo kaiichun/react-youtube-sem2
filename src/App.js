@@ -43,100 +43,26 @@ import {
 
 import Home from "./Home";
 import SideBar from "./SideBar";
+import MenuLogin from "./MenuLogin";
 
 const App = () => {
   const theme = useMantineTheme();
   const [opened, setOpened] = useState(false);
   return (
-    <div className="App">
-      <AppShell
-        navbarOffsetBreakpoint="sm"
-        asideOffsetBreakpoint="sm"
-        navbar={<SideBar />}
-        header={
-          <Header height={{ base: 50, md: 70 }} p="md" style={{ border: 0 }}>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                height: "100%",
-              }}
-            >
-              <MediaQuery largerThan="sm" styles={{ display: "none" }}>
-                <Burger
-                  opened={opened}
-                  onClick={() => setOpened((o) => !o)}
-                  size="sm"
-                  color={theme.colors.gray[6]}
-                />
-              </MediaQuery>
-              <Group style={{ width: "100vw" }} position="apart">
-                <Link
-                  to="/"
-                  style={{ textDecoration: "none", color: "inherit" }}
-                >
-                  <div className="logo">
-                    <Image
-                      src="https://www.logo.wine/a/logo/YouTube/YouTube-Logo.wine.svg"
-                      alt="YouTube Logo"
-                      width="120px"
-                      height="56px"
-                    />
-                  </div>
-                </Link>
-                <div
-                  style={{ width: "30%" }}
-                  sx={{
-                    position: "absolute",
-                    left: "0px",
-                    right: "0px",
-                    margin: " auto",
-                    display: "flex",
-                    alignItems: " center",
-                    justifyContent: "space-between",
-                    padding: "5px",
-                    border: "1px solid #ccc",
-                    borderRadius: "3px",
-                  }}
-                >
-                  <Input
-                    placeholder="Search"
-                    radius="lg"
-                    rightSection={<AiOutlineSearch />}
-                  />
-                </div>
-                <Button
-                  component={Link}
-                  to="/signin"
-                  variant="outline"
-                  radius="xl"
-                  size="sm"
-                  leftIcon={<VscAccount size="20px" p="0px" />}
-                  style={{
-                    fontStyle: "bolder",
-                    padding: "10px 10px",
-                    fontWeight: "700",
-                    backgroundColor: "transparent",
-                    border: "1px solid #E9ECEF",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "1px",
-                  }}
-                >
-                  Sign in
-                </Button>
-              </Group>
-            </div>
-          </Header>
-        }
-      >
-        <Router>
+    <Router>
+      <div className="App">
+        <AppShell
+          navbarOffsetBreakpoint="sm"
+          asideOffsetBreakpoint="sm"
+          navbar={opened && <SideBar /> ? "" : <SideBar />}
+          header={<MenuLogin />}
+        >
           <Routes>
             <Route path="/" element={<Home />} />
           </Routes>
-        </Router>
-      </AppShell>
-    </div>
+        </AppShell>
+      </div>
+    </Router>
   );
 };
 
