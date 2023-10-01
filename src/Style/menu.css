@@ -32,11 +32,16 @@
   margin-right: 1rem;
   padding-top: 4px;
 }
-
 .Login-Icon {
   width: 24px;
   height: 24px;
   color: #000;
+}
+
+.Channel-Icon {
+  text-align: start;
+  margin-bottom: 0.25rem;
+  margin-right: 1rem;
 }
 
 .item:hover {

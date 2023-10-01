@@ -44,6 +44,7 @@ import {
 import Home from "./Home";
 import SideBar from "./SideBar";
 import MenuLogin from "./MenuLogin";
+import SideBarLogin from "./SideBarLogin";
 
 const App = () => {
   const theme = useMantineTheme();
@@ -54,7 +55,7 @@ const App = () => {
         <AppShell
           navbarOffsetBreakpoint="sm"
           asideOffsetBreakpoint="sm"
-          navbar={opened && <SideBar /> ? "" : <SideBar />}
+          navbar={opened && <SideBarLogin /> ? "" : <SideBarLogin />}
           header={<MenuLogin />}
         >
           <Routes>

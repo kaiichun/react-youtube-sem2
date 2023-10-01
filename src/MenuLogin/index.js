@@ -8,6 +8,8 @@ import {
   AiOutlineSearch,
 } from "react-icons/ai";
 import { BiVideoPlus } from "react-icons/bi";
+import { SiYoutubestudio } from "react-icons/si";
+
 import { PiBell } from "react-icons/pi";
 import { GoVideo, GoReport } from "react-icons/go";
 import { RiThumbUpLine, RiMoneyDollarCircleLine } from "react-icons/ri";
@@ -126,7 +128,7 @@ export default function MenuLogin() {
               <PiBell className="Login-Icon" />
             </Button>
 
-            <Menu shadow="md" width={220}>
+            <Menu shadow="md" width={260}>
               <Menu.Target>
                 <Button
                   variant="transparent"
@@ -159,56 +161,118 @@ export default function MenuLogin() {
                         borderRadius: "50%",
                       }}
                     />
-                    <div style={{ paddingTop: "4px" }}>
+                    <div style={{ paddingTop: "8px" }}>
                       <Text size={12}>Sheryn Lee</Text>
                       <Text size={12}>@SherynLee0205</Text>
+                      <Link>Manage your account</Link>
                     </div>
                   </Group>
-                </Menu.Item>
-                <Menu.Item
-                  leftSection={
-                    <IoIosLogIn style={{ width: rem(14), height: rem(14) }} />
-                  }
-                >
-                  Messages
-                </Menu.Item>
-                <Menu.Item
-                  leftSection={
-                    <IoIosLogIn style={{ width: rem(14), height: rem(14) }} />
-                  }
-                >
-                  Gallery
-                </Menu.Item>
-                <Menu.Item
-                  leftSection={
-                    <IoIosLogIn style={{ width: rem(14), height: rem(14) }} />
-                  }
-                  rightSection={
-                    <Text size="xs" c="dimmed">
-                      ⌘K
-                    </Text>
-                  }
-                >
-                  Search
                 </Menu.Item>
 
                 <Menu.Divider />
 
-                <Menu.Label>Danger zone</Menu.Label>
-                <Menu.Item
-                  leftSection={
-                    <IoIosLogIn style={{ width: rem(14), height: rem(14) }} />
-                  }
-                >
-                  Transfer my data
+                <Menu.Item>
+                  <Group>
+                    <PiUserSquareThin
+                      style={{
+                        width: "21px",
+                        height: "20px",
+                        margin: "0",
+                      }}
+                    />
+                    <span
+                      style={{
+                        padding: "0",
+                        margin: "0",
+                      }}
+                    >
+                      {" "}
+                      Your channel
+                    </span>
+                  </Group>
                 </Menu.Item>
-                <Menu.Item
-                  color="red"
-                  leftSection={
-                    <IoIosLogIn style={{ width: rem(14), height: rem(14) }} />
-                  }
-                >
-                  Delete my account
+                <Menu.Item>
+                  <Group>
+                    <SiYoutubestudio
+                      style={{
+                        width: "21px",
+                        height: "20px",
+                        margin: "0",
+                      }}
+                    />
+                    <span
+                      style={{
+                        padding: "0",
+                        margin: "0",
+                      }}
+                    >
+                      {" "}
+                      YouTube Studio
+                    </span>
+                  </Group>
+                </Menu.Item>
+                <Menu.Item>
+                  <Group>
+                    <IoIosLogIn
+                      style={{
+                        width: "20px",
+                        height: "20px",
+                        margin: "0",
+                      }}
+                    />
+                    <span
+                      style={{
+                        padding: "0",
+                        margin: "0",
+                      }}
+                    >
+                      Sign out
+                    </span>
+                  </Group>
+                </Menu.Item>
+
+                <Menu.Divider />
+
+                <Menu.Item>
+                  <Group>
+                    <RiMoneyDollarCircleLine
+                      style={{
+                        width: "21px",
+                        height: "20px",
+                        margin: "0",
+                      }}
+                    />
+                    <span
+                      style={{
+                        padding: "0",
+                        margin: "0",
+                      }}
+                    >
+                      Purchases and memberships
+                    </span>
+                  </Group>
+                </Menu.Item>
+
+                <Menu.Divider />
+
+                <Menu.Item>
+                  <Group>
+                    <IoSettingsOutline
+                      style={{
+                        width: "21px",
+                        height: "20px",
+                        margin: "0",
+                      }}
+                    />
+                    <span
+                      style={{
+                        padding: "0",
+                        margin: "0",
+                      }}
+                    >
+                      Settings
+                    </span>
+                  </Group>
                 </Menu.Item>
               </Menu.Dropdown>
             </Menu>
