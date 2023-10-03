@@ -41,13 +41,17 @@ import {
   Burger,
   useMantineTheme,
   Input,
+  UnstyledButton,
 } from "@mantine/core";
+
 import VideoCard from "../Card";
 
 export default function Home() {
   return (
     <main>
-      <VideoCard />
+      <UnstyledButton component={Link} to="/watch/:id" variant="transparent">
+        <VideoCard />
+      </UnstyledButton>
     </main>
   );
 }

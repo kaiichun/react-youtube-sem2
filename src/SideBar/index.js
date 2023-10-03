@@ -3,6 +3,7 @@ import "../Style/menu.css"; // 导入CSS文件
 import { Link } from "react-router-dom";
 import { MdOutlineSubscriptions, MdOutlineVideoLibrary } from "react-icons/md";
 import { BiSolidMicrophone } from "react-icons/bi";
+import { BiChevronDown } from "react-icons/bi";
 import { AiFillHome } from "@react-icons/all-files/ai/AiFillHome";
 import { GoHistory } from "@react-icons/all-files/go/GoHistory";
 import { VscAccount } from "react-icons/vsc";
@@ -42,8 +43,12 @@ import {
   useMantineTheme,
   Input,
 } from "@mantine/core";
+import { useCookies } from "react-cookie";
+import { SiAsda } from "react-icons/si";
 
 export default function SideBar() {
+  const [cookies] = useCookies(["currentUser"]);
+  const { currentUser } = cookies;
   return (
     <Navbar width={{ base: 300 }} style={{ border: 0 }}>
       {/* 这里是小屏幕版本的导航栏内容 */}
@@ -67,40 +72,85 @@ export default function SideBar() {
             History
           </div>
           <Divider mt="6px" mb="6px" />
-          <div className="login" style={{ paddingLeft: "12px" }}>
-            <p>
-              Sign in to like videos,
-              <br /> comment, and subscribe.{" "}
-            </p>
-            <Button
-              component={Link}
-              to="/signin"
-              variant="outline"
-              radius="xl"
-              size="sm"
-              leftIcon={<VscAccount size="20px" p="0px" />}
-              style={{
-                fontStyle: "bolder",
-                padding: "10px 10px",
-                fontWeight: "700",
-                width: "100px",
-                backgroundColor: "transparent",
-                border: "1px solid #E9ECEF",
-                display: "flex",
-                alignItems: "center",
-                gap: "1px",
-              }}
-            >
-              Sign in
-            </Button>
-          </div>
+
+          {cookies && cookies.currentUser ? (
+            <>
+              <div>
+                <Title order={5} style={{ paddingLeft: "6px" }}>
+                  Subscriptions
+                </Title>
+
+                <div className="item">
+                  <img
+                    src="https://media.istockphoto.com/id/1073963836/vector/circus-bear.jpg?s=612x612&w=0&k=20&c=nncg45p-9utjsIGn0m59rl1gnO5UWwTSA07XGMcEl1c="
+                    alt="Login Picture"
+                    className="Channel-Icon"
+                    style={{
+                      width: "26px",
+                      height: "26px",
+                      borderRadius: "50%",
+                    }}
+                  />
+                  Da Bao
+                </div>
+                <div className="item">
+                  <img
+                    src="https://avatars.githubusercontent.com/u/131941?v=4"
+                    alt="Login Picture"
+                    className="Channel-Icon"
+                    style={{
+                      width: "26px",
+                      height: "26px",
+                      borderRadius: "50%",
+                    }}
+                  />
+                  Kai Chun
+                </div>
+                <div className="item">
+                  <BiChevronDown className="Menu-Icon" />
+                  Show More
+                </div>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="login" style={{ paddingLeft: "12px" }}>
+                <p>
+                  Sign in to like videos,
+                  <br /> comment, and subscribe.{" "}
+                </p>
+                <Button
+                  component={Link}
+                  to="/login"
+                  variant="outline"
+                  radius="xl"
+                  size="sm"
+                  leftIcon={<VscAccount size="20px" p="0px" />}
+                  style={{
+                    fontStyle: "bolder",
+                    padding: "10px 10px",
+                    fontWeight: "700",
+                    width: "100px",
+                    backgroundColor: "transparent",
+                    border: "1px solid #E9ECEF",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "1px",
+                  }}
+                >
+                  Sign in
+                </Button>
+              </div>
+            </>
+          )}
+
           <Divider mt="8px" mb="10px" />
           <Title className="title" order={6} style={{ paddingLeft: "12px" }}>
             Explore
           </Title>
           <div className="item">
             <MdOutlineLocalFireDepartment className="Menu-Icon" />
-            Trading
+            Trending
           </div>
           <div className="item">
             <IoMusicalNoteOutline className="Menu-Icon" />
@@ -118,12 +168,16 @@ export default function SideBar() {
             <ImNewspaper className="Menu-Icon" />
             News
           </div>
-          <hr className="hr" />
-          <div className="item">
-            <GrAddCircle className="Menu-Icon" />
-            Browser Channel
-          </div>
-          <hr className="hr" />
+          {cookies && cookies.currentUser ? null : (
+            <>
+              <Divider mt="8px" mb="10px" />
+              <div className="item">
+                <GrAddCircle className="Menu-Icon" />
+                Browser Channel
+              </div>
+            </>
+          )}
+          <Divider mt="8px" mb="10px" />
           <div className="title">
             <Title order={5} style={{ paddingLeft: "6px" }}>
               More from YouTube
@@ -145,7 +199,7 @@ export default function SideBar() {
               </div>
             </Link>
           </div>
-          <hr className="hr" />
+          <Divider mt="8px" mb="10px" />
           <div className="item">
             <IoSettingsOutline className="Menu-Icon" />
             Settings

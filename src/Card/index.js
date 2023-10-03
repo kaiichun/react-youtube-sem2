@@ -17,7 +17,7 @@ const VideoCard = () => {
   return (
     <>
       <Grid>
-        <Grid.Col md={6} lg={4}>
+        <Grid.Col span={3} md={6} lg={4} sm={12}>
           <Card style={{ border: 0 }}>
             <Card.Section
               style={{
@@ -28,18 +28,9 @@ const VideoCard = () => {
               <img
                 src="https://i.ytimg.com/vi/j38P1DiKIRE/maxresdefault.jpg"
                 height="200px"
-                width="360px"
                 alt="Thumbnail"
                 style={{ border: 0, borderRadius: "5%", position: "relative" }}
               />
-              <Badge
-                color="dark"
-                radius="md"
-                variant="filled"
-                style={{ position: "absolute", bottom: "110px", right: "30px" }}
-              >
-                12:05
-              </Badge>
             </Card.Section>
 
             <Group position="left">
@@ -73,7 +64,7 @@ const VideoCard = () => {
             </Group>
           </Card>
         </Grid.Col>
-        <Grid.Col md={6} lg={4}>
+        <Grid.Col span={3} md={6} lg={4} sm={12}>
           <Card style={{ border: 0 }}>
             <Card.Section
               style={{
@@ -88,18 +79,53 @@ const VideoCard = () => {
                 alt="Thumbnail"
                 style={{ border: 0, borderRadius: "5%", position: "relative" }}
               />
-              <Badge
-                color="dark"
-                radius="md"
-                variant="filled"
-                style={{ position: "absolute", bottom: "110px", right: "30px" }}
-              >
-                11:02
-              </Badge>
             </Card.Section>
             <Group position="left">
               <img
                 src="https://w0.peakpx.com/wallpaper/310/896/HD-wallpaper-doremon-and-nobita-art-cartoon-doremon-drawing-graphic-illustrator-lallupallu-minimal-rojan-vector.jpg"
+                alt="Profile Picture"
+                style={{
+                  width: "36px",
+                  height: "36px",
+                  borderRadius: "50%",
+                }}
+              />
+
+              <div
+                style={{
+                  paddingTop: "18px",
+                }}
+              >
+                <Title order={4}>Doremon EP IV </Title>
+                <Text size="sm" color="dimmed">
+                  Doremon Offical Channel
+                </Text>
+                <Text size="sm" color="dimmed">
+                  12.7M views . 28 days ago
+                </Text>
+              </div>
+            </Group>
+          </Card>
+        </Grid.Col>
+        <Grid.Col span={4}>
+          <Card style={{ border: 0 }}>
+            <Card.Section
+              style={{
+                marginBottom: "0px",
+                paddingBottom: "0px",
+              }}
+            >
+              <img
+                src="https://onecms-res.cloudinary.com/image/upload/s--iRTXsC68--/c_fill,g_auto,h_676,w_1200/f_auto,q_auto/v1/tdy-migration/28415853.JPG?itok=rYo4PsoT"
+                height="200px"
+                width="360px"
+                alt="Thumbnail"
+                style={{ border: 0, borderRadius: "5%", position: "relative" }}
+              />
+            </Card.Section>
+            <Group position="left">
+              <img
+                src="https://w0.peakpx.com/wallpaper/310/896/HD-wallpaper-doremon-and-nobita-art-cartoon-doremo"
                 alt="Profile Picture"
                 style={{
                   width: "36px",
