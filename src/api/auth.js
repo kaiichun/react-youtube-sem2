@@ -14,12 +14,26 @@ export const loginUser = async (data) => {
   return response.data;
 };
 
+export const addProfileImage = async (file) => {
+  const formData = new FormData();
+  formData.append("image", file);
+  const response = await axios({
+    method: "POST",
+    url: API_URL + "/image",
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+    data: formData,
+  });
+  return response.data;
+};
+
 export const uploadProfileImage = async (file) => {
   const formData = new FormData();
   formData.append("image", file);
   const response = await axios({
     method: "POST",
-    url: API_URL + "/images",
+    url: API_URL + "/uploadimage",
     headers: {
       "Content-Type": "multipart/form-data",
     },

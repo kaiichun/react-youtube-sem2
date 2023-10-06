@@ -1,5 +1,29 @@
+import {
+  ScrollArea,
+  Table,
+  Button,
+  TextInput,
+  Divider,
+  Select,
+  UnstyledButton,
+  LoadingOverlay,
+} from "@mantine/core";
+
+import { SlPencil } from "react-icons/sl";
+import { CiYoutube } from "react-icons/ci";
+import { AiOutlineDelete } from "react-icons/ai";
+
+import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
+import { useState, useMemo } from "react";
+import ReactPlayer from "react-player";
+import { useNavigate, Link } from "react-router-dom";
+import { notifications } from "@mantine/notifications";
+import { useHover } from "@mantine/hooks";
+// import Header from "../Header";
+import { useCookies } from "react-cookie";
+import { fetchVideos } from "../api/video";
+
 import React from "react";
-// import "../Style/home.css"; // 导入CSS文件
 import {
   Container,
   Grid,
@@ -14,142 +38,87 @@ import {
 import { GoVerified } from "react-icons/go";
 
 const VideoCard = () => {
+  const [cookies] = useCookies(["currentUser"]);
+  const { hovered, ref } = useHover();
+  const { currentUser } = cookies;
+  const queryClient = useQueryClient();
+
+  const { isLoading, data: videos } = useQuery({
+    queryKey: ["videos"],
+    queryFn: () => fetchVideos(currentUser ? currentUser.token : ""),
+  });
+  const isAdmin = useMemo(() => {
+    return cookies &&
+      cookies.currentUser &&
+      cookies.currentUser.role === "admin"
+      ? true
+      : false;
+  }, [cookies]);
+
   return (
     <>
       <Grid>
-        <Grid.Col span={3} md={6} lg={4} sm={12}>
-          <Card style={{ border: 0 }}>
-            <Card.Section
-              style={{
-                marginBottom: "0px",
-                paddingBottom: "0px",
-              }}
-            >
-              <img
-                src="https://i.ytimg.com/vi/j38P1DiKIRE/maxresdefault.jpg"
-                height="200px"
-                alt="Thumbnail"
-                style={{ border: 0, borderRadius: "5%", position: "relative" }}
-              />
-            </Card.Section>
+        {videos
+          ? videos.map((v) => {
+              return (
+                <Grid.Col span={3} md={6} lg={4} sm={12}>
+                  <UnstyledButton
+                    component={Link}
+                    to={"/watch/" + v._id}
+                    variant="transparent"
+                  >
+                    <Card style={{ border: 0 }}>
+                      <Card.Section
+                        style={{
+                          marginBottom: "0px",
+                          paddingBottom: "0px",
+                        }}
+                      >
+                        <Image
+                          src={"http://localhost:1205/" + v.thumbnail}
+                          height="200px"
+                          alt="Thumbnail"
+                          style={{
+                            border: 0,
+                            borderRadius: "5%",
+                            position: "relative",
+                          }}
+                        />
+                      </Card.Section>
 
-            <Group position="left">
-              <img
-                src="https://m.media-amazon.com/images/S/pv-target-images/96cbaafbcb3355d900ebf3c99c018189095a37dc3b45c90b725cd56587c70502.png"
-                alt="Profile Picture"
-                style={{
-                  width: "36px",
-                  height: "36px",
-                  borderRadius: "50%",
-                }}
-              />
-              <div
-                style={{
-                  paddingTop: "18px",
-                }}
-              >
-                <Title order={4}>Welcome to my Vlog</Title>
-                <Text size="sm" color="dimmed">
-                  Yuin Zhi{" "}
-                  <GoVerified
-                    style={{
-                      paddingTop: "4px",
-                    }}
-                  />
-                </Text>
-                <Text size="sm" color="dimmed">
-                  12.14B views . 1 days ago
-                </Text>
-              </div>
-            </Group>
-          </Card>
-        </Grid.Col>
-        <Grid.Col span={3} md={6} lg={4} sm={12}>
-          <Card style={{ border: 0 }}>
-            <Card.Section
-              style={{
-                marginBottom: "0px",
-                paddingBottom: "0px",
-              }}
-            >
-              <img
-                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTevJRM2nxE30aLTogw_Gtp9L1Y0KbpfWPtIqTIJQYKMWncVhjlGXk1R31ux23d96sFGtk&usqp=CAU"
-                height="200px"
-                width="360px"
-                alt="Thumbnail"
-                style={{ border: 0, borderRadius: "5%", position: "relative" }}
-              />
-            </Card.Section>
-            <Group position="left">
-              <img
-                src="https://w0.peakpx.com/wallpaper/310/896/HD-wallpaper-doremon-and-nobita-art-cartoon-doremon-drawing-graphic-illustrator-lallupallu-minimal-rojan-vector.jpg"
-                alt="Profile Picture"
-                style={{
-                  width: "36px",
-                  height: "36px",
-                  borderRadius: "50%",
-                }}
-              />
-
-              <div
-                style={{
-                  paddingTop: "18px",
-                }}
-              >
-                <Title order={4}>Doremon EP IV </Title>
-                <Text size="sm" color="dimmed">
-                  Doremon Offical Channel
-                </Text>
-                <Text size="sm" color="dimmed">
-                  12.7M views . 28 days ago
-                </Text>
-              </div>
-            </Group>
-          </Card>
-        </Grid.Col>
-        <Grid.Col span={4}>
-          <Card style={{ border: 0 }}>
-            <Card.Section
-              style={{
-                marginBottom: "0px",
-                paddingBottom: "0px",
-              }}
-            >
-              <img
-                src="https://onecms-res.cloudinary.com/image/upload/s--iRTXsC68--/c_fill,g_auto,h_676,w_1200/f_auto,q_auto/v1/tdy-migration/28415853.JPG?itok=rYo4PsoT"
-                height="200px"
-                width="360px"
-                alt="Thumbnail"
-                style={{ border: 0, borderRadius: "5%", position: "relative" }}
-              />
-            </Card.Section>
-            <Group position="left">
-              <img
-                src="https://w0.peakpx.com/wallpaper/310/896/HD-wallpaper-doremon-and-nobita-art-cartoon-doremo"
-                alt="Profile Picture"
-                style={{
-                  width: "36px",
-                  height: "36px",
-                  borderRadius: "50%",
-                }}
-              />
-
-              <div
-                style={{
-                  paddingTop: "18px",
-                }}
-              >
-                <Title order={4}>Doremon EP IV </Title>
-                <Text size="sm" color="dimmed">
-                  Doremon Offical Channel
-                </Text>
-                <Text size="sm" color="dimmed">
-                  12.7M views . 28 days ago
-                </Text>
-              </div>
-            </Group>
-          </Card>
-        </Grid.Col>
+                      <Group position="left">
+                        {v.user.map((users, index) => (
+                          <Title order={4}>{users.name}</Title>
+                        ))}
+                        <img
+                          src=""
+                          alt="Profile Picture"
+                          style={{
+                            width: "36px",
+                            height: "36px",
+                            borderRadius: "50%",
+                          }}
+                        />
+                        <div
+                          style={{
+                            paddingTop: "18px",
+                          }}
+                        >
+                          <Title order={4}>{v.title}</Title>
+                          <Text size="sm" color="dimmed">
+                            123
+                          </Text>
+                          <Text size="sm" color="dimmed">
+                            {v.views} views . {v.createdAt}
+                          </Text>
+                        </div>
+                      </Group>
+                    </Card>
+                  </UnstyledButton>
+                </Grid.Col>
+              );
+            })
+          : null}
       </Grid>
     </>
   );

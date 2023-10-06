@@ -1,14 +1,17 @@
 // App.js
+import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
+import { notifications } from "@mantine/notifications";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { fetchVideos, getVideos, addViews } from "../api/video";
+import { useCookies } from "react-cookie";
 import {
   Container,
   Space,
   TextInput,
   Card,
   Button,
-  Image,
   Group,
   Grid,
-  PasswordInput,
   Text,
   Title,
   Avatar,
@@ -18,47 +21,73 @@ import {
 } from "@mantine/core";
 import { RiThumbUpLine, RiThumbDownLine } from "react-icons/ri";
 import { PiShareFatLight } from "react-icons/pi";
-
 import VideoCard from "../Card";
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 
 export default function Video() {
+  const [cookies] = useCookies(["currentUser"]);
+  const { currentUser } = cookies;
+  const { id } = useParams();
+  const [title, setTitle] = useState("");
+  const [viewCount, setViewCount] = useState(0);
+  const [description, setDescription] = useState("");
+  const [thumbnail, setThumbnail] = useState("");
+  const [video, setVideo] = useState("");
+  const [views, setViews] = useState("");
+  const [uploading, setUploading] = useState(false);
+  const { isLoading, data: v = {} } = useQuery({
+    queryKey: ["videos"],
+    queryFn: () => getVideos(id),
+  });
+
+  const {} = useQuery({
+    queryKey: ["views"],
+    queryFn: () => addViews(id),
+  });
+
   return (
     <Container fluid>
       <Grid>
         <Grid.Col span={9}>
           <div>
             <Group>
-              <iframe
+              <video
                 width="100%"
                 height="720"
-                src="https://www.youtube.com/embed/k3Vfj-e1Ma4"
+                src={"http://localhost:1205/" + v.video}
                 title="YouTube video player"
                 frameborder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowfullscreen
-              ></iframe>
+              />
             </Group>
             <Space h="10px" />
-            <Title size={24}>Video 1</Title>
+            <Title size={24}> {v.title}</Title>
             <Space h="15px" />
             <Group position="apart">
               <Group>
-                <img
-                  src="https://e00-marca.uecdn.es/assets/multimedia/imagenes/2023/02/05/16755519728234.jpg"
-                  alt="Login Picture"
-                  style={{
-                    width: "46px",
-                    height: "46px",
-                    borderRadius: "50%",
-                  }}
-                />
-                <div style={{ paddingTop: "2px" }}>
-                  <Text size={15} fw={500}>
-                    John Cane
-                  </Text>
-                  <Text size={12}>810,020 subscribers</Text>
-                  <Space h="5px" />
-                </div>
+                {v.user ? (
+                  <>
+                    <img
+                      src={"http://localhost:1205/" + v.user.image}
+                      alt="Login Picture"
+                      style={{
+                        width: "46px",
+                        height: "46px",
+                        borderRadius: "50%",
+                      }}
+                    />
+                    <div style={{ paddingTop: "2px" }}>
+                      <Text size={15} fw={500}>
+                        {v.user.name}
+                      </Text>
+                      <Text size={12}>{v.user.subscribers} subscribers</Text>
+                      <Space h="5px" />
+                    </div>
+                  </>
+                ) : null}
+
                 <Button>SUBSCRIBE</Button>
               </Group>
               <Group position="right">
@@ -76,32 +105,36 @@ export default function Video() {
             <Space h="20px" />
             <Card style={{ backgroundColor: "#F1F3F5" }} radius="md">
               <Text fz="sm" fw={700}>
-                7,948,154 views • Jun 22, 2022
+                {v.views} views • {v.createdAt}
               </Text>
-              <Text fz="sm">This is a description</Text>
-              <Text fz="sm">This is a description 2</Text>
+              <Space h="5px" />
+              <Text fz="sm">{v.description}</Text>
             </Card>
             {/* <Comments /> */}
           </div>
         </Grid.Col>
-        {/* <Recommendation> */}
-        <Grid.Col span={3}>
-          <Text>Reccomed video</Text>
-          <Divider />
-          <Space h="5px" />
-          <Flex
-            mih={50}
-            gap="sm"
-            justify="center"
-            align="center"
-            direction="column"
-            wrap="wrap"
-          >
-            <VideoCard type="sm" />
-            {/* </Recommendation> */}
-          </Flex>
-        </Grid.Col>
       </Grid>
+      <Group>
+        <Group position="left">
+          <Avatar
+            style={{ width: "50px", height: "50px", borderRadius: "50%" }}
+            src="https:/"
+          />
+        </Group>
+
+        {/* <Group>
+            <Text style={{ fontSize: "14px" }}>John Doe 1 day ago</Text>
+          </Group> */}
+
+        <Group>
+          {" "}
+          <TextInput
+            value=""
+            placeholder="Enter the description here"
+            style={{ border: "0px 0px 1px 0 px " }}
+          />
+        </Group>
+      </Group>
     </Container>
   );
 }

@@ -26,7 +26,9 @@ import {
   Image,
   Group,
   Space,
+  UnstyledButton,
 } from "@mantine/core";
+
 import Home from "../Home";
 
 import React, { useState, useEffect } from "react";
@@ -50,27 +52,47 @@ export default function SideBar() {
   const [cookies] = useCookies(["currentUser"]);
   const { currentUser } = cookies;
   return (
-    <Navbar width={{ base: 300 }} style={{ border: 0 }}>
+    <Navbar width={{ base: 280 }} style={{ border: 0 }}>
       {/* 这里是小屏幕版本的导航栏内容 */}
       <ScrollArea scrollbarSize={10} scrollHideDelay={10}>
         <Container>
-          <div className="item">
-            <AiFillHome className="Menu-Icon" />
-            Home
-          </div>
-          <div className="item">
-            <MdOutlineSubscriptions className="Menu-Icon" />
-            Subscriptions
-          </div>
+          <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
+            <div className="item">
+              <AiFillHome className="Menu-Icon" />
+              Home
+            </div>
+          </Link>
+          <Link
+            to="/subscriptions"
+            style={{ textDecoration: "none", color: "inherit" }}
+          >
+            <div className="item">
+              <MdOutlineSubscriptions className="Menu-Icon" />
+              Subscriptions
+            </div>
+          </Link>
+
           <Divider mt="6px" mb="6px" />
-          <div className="item">
-            <MdOutlineVideoLibrary className="Menu-Icon" />
-            Library
-          </div>
-          <div className="item">
-            <GoHistory className="Menu-Icon" />
-            History
-          </div>
+
+          <Link
+            to="/library"
+            style={{ textDecoration: "none", color: "inherit" }}
+          >
+            <div className="item">
+              <MdOutlineVideoLibrary className="Menu-Icon" />
+              Library
+            </div>
+          </Link>
+          <Link
+            to="/history"
+            style={{ textDecoration: "none", color: "inherit" }}
+          >
+            <div className="item">
+              <GoHistory className="Menu-Icon" />
+              History
+            </div>
+          </Link>
+
           <Divider mt="6px" mb="6px" />
 
           {cookies && cookies.currentUser ? (
@@ -79,33 +101,42 @@ export default function SideBar() {
                 <Title order={5} style={{ paddingLeft: "6px" }}>
                   Subscriptions
                 </Title>
-
-                <div className="item">
-                  <img
-                    src="https://media.istockphoto.com/id/1073963836/vector/circus-bear.jpg?s=612x612&w=0&k=20&c=nncg45p-9utjsIGn0m59rl1gnO5UWwTSA07XGMcEl1c="
-                    alt="Login Picture"
-                    className="Channel-Icon"
-                    style={{
-                      width: "26px",
-                      height: "26px",
-                      borderRadius: "50%",
-                    }}
-                  />
-                  Da Bao
-                </div>
-                <div className="item">
-                  <img
-                    src="https://avatars.githubusercontent.com/u/131941?v=4"
-                    alt="Login Picture"
-                    className="Channel-Icon"
-                    style={{
-                      width: "26px",
-                      height: "26px",
-                      borderRadius: "50%",
-                    }}
-                  />
-                  Kai Chun
-                </div>
+                <Link
+                  to="/:id"
+                  style={{ textDecoration: "none", color: "inherit" }}
+                >
+                  <div className="item">
+                    <img
+                      src="https://media.istockphoto.com/id/1073963836/vector/circus-bear.jpg?s=612x612&w=0&k=20&c=nncg45p-9utjsIGn0m59rl1gnO5UWwTSA07XGMcEl1c="
+                      alt="Login Picture"
+                      className="Channel-Icon"
+                      style={{
+                        width: "26px",
+                        height: "26px",
+                        borderRadius: "50%",
+                      }}
+                    />
+                    Da Bao
+                  </div>
+                </Link>
+                <Link
+                  to="/:id"
+                  style={{ textDecoration: "none", color: "inherit" }}
+                >
+                  <div className="item">
+                    <img
+                      src="https://avatars.githubusercontent.com/u/131941?v=4"
+                      alt="Login Picture"
+                      className="Channel-Icon"
+                      style={{
+                        width: "26px",
+                        height: "26px",
+                        borderRadius: "50%",
+                      }}
+                    />
+                    Kai Chun
+                  </div>
+                </Link>
                 <div className="item">
                   <BiChevronDown className="Menu-Icon" />
                   Show More
@@ -148,26 +179,48 @@ export default function SideBar() {
           <Title className="title" order={6} style={{ paddingLeft: "12px" }}>
             Explore
           </Title>
-          <div className="item">
-            <MdOutlineLocalFireDepartment className="Menu-Icon" />
-            Trending
-          </div>
-          <div className="item">
-            <IoMusicalNoteOutline className="Menu-Icon" />
-            Music
-          </div>
-          <div className="item">
-            <GoTrophy className="Menu-Icon" />
-            Sports
-          </div>
-          <div className="item">
-            <SiYoutubegaming className="Menu-Icon" />
-            Gaming
-          </div>
-          <div className="item">
-            <ImNewspaper className="Menu-Icon" />
-            News
-          </div>
+          <Link
+            to="/trending"
+            style={{ textDecoration: "none", color: "inherit" }}
+          >
+            <div className="item">
+              <MdOutlineLocalFireDepartment className="Menu-Icon" />
+              Trending
+            </div>
+          </Link>
+          <Link
+            to="/music"
+            style={{ textDecoration: "none", color: "inherit" }}
+          >
+            <div className="item">
+              <IoMusicalNoteOutline className="Menu-Icon" />
+              Music
+            </div>
+          </Link>
+          <Link
+            to="/sports"
+            style={{ textDecoration: "none", color: "inherit" }}
+          >
+            <div className="item">
+              <GoTrophy className="Menu-Icon" />
+              Sports
+            </div>
+          </Link>
+          <Link
+            to="/gamming"
+            style={{ textDecoration: "none", color: "inherit" }}
+          >
+            <div className="item">
+              <SiYoutubegaming className="Menu-Icon" />
+              Gaming
+            </div>
+          </Link>
+          <Link to="/news" style={{ textDecoration: "none", color: "inherit" }}>
+            <div className="item">
+              <ImNewspaper className="Menu-Icon" />
+              News
+            </div>
+          </Link>
           {cookies && cookies.currentUser ? null : (
             <>
               <Divider mt="8px" mb="10px" />
@@ -184,7 +237,10 @@ export default function SideBar() {
             </Title>
           </div>
           <div className="item">
-            <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
+            <Link
+              to="/premium"
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
               <div className="logo">
                 <Group>
                   <Image
@@ -200,18 +256,33 @@ export default function SideBar() {
             </Link>
           </div>
           <Divider mt="8px" mb="10px" />
-          <div className="item">
-            <IoSettingsOutline className="Menu-Icon" />
-            Settings
-          </div>
-          <div className="item">
-            <PiFlagThin className="Menu-Icon" />
-            Report
-          </div>
-          <div className="item">
-            <GoReport className="Menu-Icon" />
-            Help
-          </div>
+          <Link
+            to="https://support.google.com/youtube/answer/2976814?hl=en"
+            style={{ textDecoration: "none", color: "inherit" }}
+          >
+            <div className="item">
+              <IoSettingsOutline className="Menu-Icon" />
+              Settings
+            </div>
+          </Link>
+          <Link
+            to="https://www.youtube.com/reporthistory"
+            style={{ textDecoration: "none", color: "inherit" }}
+          >
+            <div className="item">
+              <PiFlagThin className="Menu-Icon" />
+              Report
+            </div>
+          </Link>
+          <Link
+            to="https://support.google.com/youtube/?hl=en&sjid=8798751577450272532-AP#topic=9257498"
+            style={{ textDecoration: "none", color: "inherit" }}
+          >
+            <div className="item">
+              <GoReport className="Menu-Icon" />
+              Help
+            </div>
+          </Link>
           <Space h="20px" />
           <Container
             sx={{
@@ -219,37 +290,99 @@ export default function SideBar() {
             }}
           >
             <Group fz="xs" p="0" pb="0" pt="0" mt="0">
-              <span sx={{ color: "#606060" }}>About</span>
-              <span sx={{ color: "#606060" }}>Press</span>
-              <span sx={{ color: "#606060" }}>Copyright</span>
+              <Link
+                to="https://about.youtube/"
+                style={{ textDecoration: "none", color: "inherit" }}
+              >
+                <span sx={{ color: "#606060" }}>About</span>
+              </Link>
+              <Link
+                to="https://blog.youtube/"
+                style={{ textDecoration: "none", color: "inherit" }}
+              >
+                <span sx={{ color: "#606060" }}>Press</span>
+              </Link>
+              <Link
+                to="https://www.youtube.com/howyoutubeworks/policies/copyright/"
+                style={{ textDecoration: "none", color: "inherit" }}
+              >
+                <span sx={{ color: "#606060" }}>Copyright</span>
+              </Link>
             </Group>
             <Group fz="xs" p="0" pb="0" pt="0" mt="0">
-              <span sx={{ color: "#606060" }}>Contact us</span>
-              <span sx={{ color: "#606060" }}>Creators</span>
-              <span sx={{ color: "#606060" }}>Advertise</span>
+              <Link
+                to="https://www.youtube.com/t/contact_us/"
+                style={{ textDecoration: "none", color: "inherit" }}
+              >
+                <span sx={{ color: "#606060" }}>Contact us</span>
+              </Link>
+              <Link
+                to="https://www.youtube.com/creators/"
+                style={{ textDecoration: "none", color: "inherit" }}
+              >
+                <span sx={{ color: "#606060" }}>Creators</span>
+              </Link>
+              <Link
+                to="https://www.youtube.com/ads/"
+                style={{ textDecoration: "none", color: "inherit" }}
+              >
+                <span sx={{ color: "#606060" }}>Advertise</span>
+              </Link>
             </Group>
             <Group fz="xs" p="0" pb="0" pt="0" mt="0">
-              <span sx={{ color: "#606060" }}>Developers</span>
+              <Link
+                to="https://developers.google.com/youtube"
+                style={{ textDecoration: "none", color: "inherit" }}
+              >
+                <span sx={{ color: "#606060" }}>Developers</span>
+              </Link>
             </Group>
             <Space h="10px" />
             <Group fz="xs" p="0" pb="0" pt="0" mt="0">
-              <span sx={{ color: "#606060", margin: "0px 1px 0px 0px" }}>
-                Terms
-              </span>
-              <span sx={{ color: "#606060", margin: "0px 1px  px 0px 0px" }}>
-                Privacy
-              </span>
-              <span sx={{ color: "#606060", margin: "0px 2px 0px 0px" }}>
-                Policy & Safety
-              </span>
+              <Link
+                to="https://www.youtube.com/t/terms"
+                style={{ textDecoration: "none", color: "inherit" }}
+              >
+                <span sx={{ color: "#606060", margin: "0px 1px 0px 0px" }}>
+                  Terms
+                </span>
+              </Link>
+              <Link
+                to="https://policies.google.com/privacy?hl=en"
+                style={{ textDecoration: "none", color: "inherit" }}
+              >
+                <span sx={{ color: "#606060", margin: "0px 1px  px 0px 0px" }}>
+                  Privacy
+                </span>
+              </Link>
+              <Link
+                to="https://www.youtube.com/howyoutubeworks/policies/community-guidelines/"
+                style={{ textDecoration: "none", color: "inherit" }}
+              >
+                <span sx={{ color: "#606060", margin: "0px 2px 0px 0px" }}>
+                  Policy & Safety
+                </span>
+              </Link>
             </Group>
             <Group fz="xs" p="0" pb="0" pt="0" mt="0">
-              <span sx={{ color: "#606060", margin: "0px 1px 0px 0px" }}>
-                How Streamy works
-              </span>
-              <span sx={{ color: "#606060", margin: "0px 1px 0px 0px" }}>
-                Test new features
-              </span>
+              <Link
+                to="https://www.youtube.com/howyoutubeworks/?utm_campaign=ytgen&utm_source=ythp&utm_medium=LeftNav&utm_content=txt&u=https%3A%2F%2Fwww.youtube.com%2Fhowyoutubeworks%3Futm_source%3Dythp%26utm_medium%3DLeftNav%26utm_campaign%3Dytgen"
+                style={{ textDecoration: "none", color: "inherit" }}
+              >
+                <span sx={{ color: "#606060", margin: "0px 1px 0px 0px" }}>
+                  How YouTube works
+                </span>
+              </Link>
+            </Group>
+            <Group fz="xs" p="0" pb="0" pt="0" mt="0">
+              <Link
+                to="https://www.youtube.com/new"
+                style={{ textDecoration: "none", color: "inherit" }}
+              >
+                <span sx={{ color: "#606060", margin: "0px 1px 0px 0px" }}>
+                  Test new features
+                </span>
+              </Link>
             </Group>
             <Space h="20px" />
             <div>

@@ -23,11 +23,11 @@
 }
 
 .item {
-  padding: 20px 12px;
+  padding: 20px;
   margin: 3px;
   size: 40px;
   font-family: "Roboto", sans-serif;
-  /* width: 200px; */
+  width: 200px;
   height: 20px;
   font-size: 16px;
   display: flex;
@@ -46,6 +46,7 @@
 
 .item:hover {
   background-color: #ececec;
+  width: 100%;
   font-family: "Roboto", sans-serif;
   border-radius: 10px 10px 10px 10px;
 }

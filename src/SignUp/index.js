@@ -96,6 +96,7 @@ const SignUp = () => {
 
   return (
     <Container>
+      <Space h="120px" />
       <Card
         withBorder
         // shadow="lg"

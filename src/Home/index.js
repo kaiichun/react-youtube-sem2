@@ -1,57 +1,118 @@
-// Menu.js
-// import "../Style/menu.css"; // 导入CSS文件
-import { Link } from "react-router-dom";
-import { MdOutlineSubscriptions, MdOutlineVideoLibrary } from "react-icons/md";
-import { BiSolidMicrophone } from "react-icons/bi";
-import { AiFillHome } from "@react-icons/all-files/ai/AiFillHome";
-import { GoHistory } from "@react-icons/all-files/go/GoHistory";
-import { VscAccount } from "react-icons/vsc";
-import { MdOutlineLocalFireDepartment } from "react-icons/md";
-import { IoMusicalNoteOutline } from "@react-icons/all-files/io5/IoMusicalNoteOutline";
-import { SiYoutubegaming } from "@react-icons/all-files/si/SiYoutubegaming";
-import { ImNewspaper } from "@react-icons/all-files/im/ImNewspaper";
-import { GoTrophy } from "react-icons/go";
-import { GrAddCircle } from "@react-icons/all-files/gr/GrAddCircle";
-import { AiOutlineSearch } from "@react-icons/all-files/ai/AiOutlineSearch";
-import { IoSettingsOutline } from "@react-icons/all-files/io5/IoSettingsOutline";
-import { PiFlagThin } from "react-icons/pi";
-import { GoReport } from "@react-icons/all-files/go/GoReport";
+import {
+  ScrollArea,
+  Table,
+  Button,
+  TextInput,
+  Divider,
+  Select,
+  UnstyledButton,
+  LoadingOverlay,
+} from "@mantine/core";
+
+import { SlPencil } from "react-icons/sl";
+import { CiYoutube } from "react-icons/ci";
+import { AiOutlineDelete } from "react-icons/ai";
+
+import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
+import { useState, useMemo } from "react";
+import ReactPlayer from "react-player";
+import { useNavigate, Link } from "react-router-dom";
+import { notifications } from "@mantine/notifications";
+import { useHover } from "@mantine/hooks";
+// import Header from "../Header";
+import { useCookies } from "react-cookie";
+import { fetchVideos, addViews } from "../api/video";
+
+import React from "react";
 import {
   Container,
   Grid,
-  Button,
-  Title,
-  Divider,
   Image,
-  Group,
+  Title,
   Space,
-} from "@mantine/core";
-import SideBar from "../SideBar";
-
-import React, { useState, useEffect } from "react";
-import {
-  AppShell,
-  Navbar,
-  Header,
-  Footer,
-  Aside,
+  Card,
   Text,
-  MediaQuery,
-  ScrollArea,
-  Burger,
-  useMantineTheme,
-  Input,
-  UnstyledButton,
+  Group,
+  Badge,
 } from "@mantine/core";
+import { GoVerified } from "react-icons/go";
+import axios from "axios";
 
-import VideoCard from "../Card";
+const Home = () => {
+  const [cookies] = useCookies(["currentUser"]);
+  const { hovered, ref } = useHover();
+  const { currentUser } = cookies;
+  const queryClient = useQueryClient();
 
-export default function Home() {
+  const { isLoading, data: videos } = useQuery({
+    queryKey: ["videos"],
+    queryFn: () => fetchVideos(currentUser ? currentUser.token : ""),
+  });
+
   return (
-    <main>
-      <UnstyledButton component={Link} to="/watch/:id" variant="transparent">
-        <VideoCard />
-      </UnstyledButton>
-    </main>
+    <>
+      <Grid>
+        {videos
+          ? videos.map((v) => {
+              return (
+                <Grid.Col span={3} md={6} lg={4} sm={12}>
+                  <UnstyledButton
+                    component={Link}
+                    to={"/watch/" + v._id}
+                    variant="transparent"
+                  >
+                    <Card style={{ border: 0 }}>
+                      <Card.Section
+                        style={{
+                          marginBottom: "0px",
+                          paddingBottom: "0px",
+                        }}
+                      >
+                        <Image
+                          src={"http://localhost:1205/" + v.thumbnail}
+                          height="200px"
+                          alt="Thumbnail"
+                          style={{
+                            border: 0,
+                            borderRadius: "5%",
+                            position: "relative",
+                          }}
+                        />
+                      </Card.Section>
+
+                      <Group position="left">
+                        <img
+                          src={"http://localhost:1205/" + v.user.image}
+                          alt="Profile Picture"
+                          style={{
+                            width: "36px",
+                            height: "36px",
+                            borderRadius: "50%",
+                          }}
+                        />
+                        <div
+                          style={{
+                            paddingTop: "18px",
+                          }}
+                        >
+                          <Title order={4}>{v.title}</Title>
+                          <Text size="sm" color="dimmed">
+                            {v.user.name}
+                          </Text>
+                          <Text size="sm" color="dimmed">
+                            {v.views} views . {v.createdAt}
+                          </Text>
+                        </div>
+                      </Group>
+                    </Card>
+                  </UnstyledButton>
+                </Grid.Col>
+              );
+            })
+          : null}
+      </Grid>
+    </>
   );
-}
+};
+
+export default Home;

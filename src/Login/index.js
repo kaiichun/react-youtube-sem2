@@ -60,7 +60,7 @@ export default function Login() {
 
   return (
     <Container>
-      <Space h="80px" />
+      <Space h="160px" />
       <Card
         withBorder
         mx="auto"
