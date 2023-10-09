@@ -10,6 +10,9 @@ import Video from "./Video";
 import AppWrapper from "./AppWrapper";
 import Studio from "./Studio";
 import VideoEdit from "./VideoEdit";
+import Trending from "./Trending";
+import UserEdit from "./User_Edit";
+import Channel from "./Channel";
 const App = () => {
   return (
     <Router>
@@ -22,8 +25,32 @@ const App = () => {
             </AppWrapper>
           }
         />
+        <Route
+          path="/trending"
+          element={
+            <AppWrapper>
+              <Trending />
+            </AppWrapper>
+          }
+        />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/login" element={<Login />} />
+        <Route
+          path="/user_info/:id"
+          element={
+            <AppWrapper>
+              <UserEdit />
+            </AppWrapper>
+          }
+        />
+        <Route
+          path="/channel/:id"
+          element={
+            <AppWrapper>
+              <Channel />
+            </AppWrapper>
+          }
+        />
         <Route
           path="/watch/:id"
           element={

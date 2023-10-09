@@ -85,6 +85,7 @@ const AppWrapper = ({ children }) => {
   const [description, setDescription] = useState("");
   const [thumbnail, setThumbnail] = useState("");
   const [video, setVideo] = useState("");
+  const [keywords, setKeywords] = useState("");
   const [cookies, setCookies, removeCookies] = useCookies(["currentUser"]);
   const { currentUser } = cookies;
 
@@ -451,7 +452,10 @@ const AppWrapper = ({ children }) => {
                       <Menu.Item>
                         <Group>
                           <img
-                            src={cookies.currentUser.image}
+                            src={
+                              "http://localhost:1205/" +
+                              cookies.currentUser.image
+                            }
                             alt="Login Picture"
                             style={{
                               width: "38px",
@@ -460,10 +464,21 @@ const AppWrapper = ({ children }) => {
                             }}
                           />
                           <div style={{ paddingTop: "8px" }}>
-                            <Text size={17}>{cookies.currentUser.name}</Text>
-                            <Text size={8}>@{cookies.currentUser._id}</Text>
-                            <Space h="5px" />
-                            <Link>Manage your account</Link>
+                            <UnstyledButton
+                              variant="transparent"
+                              size="sm"
+                              component={Link}
+                              to={"/user_info/" + cookies.currentUser._id}
+                            >
+                              <Text size={17}>{cookies.currentUser.name}</Text>
+                              <Text size={8}>@{cookies.currentUser._id}</Text>
+                              <Space h="5px" />
+                              <Link
+                                to={"/user_info/" + cookies.currentUser._id}
+                              >
+                                Manage your account
+                              </Link>
+                            </UnstyledButton>
                           </div>
                         </Group>
                       </Menu.Item>
@@ -473,7 +488,7 @@ const AppWrapper = ({ children }) => {
                           variant="transparent"
                           size="sm"
                           component={Link}
-                          to="/:id"
+                          to={"/channel/" + cookies.currentUser._id}
                         >
                           <Group>
                             <PiUserSquareThin

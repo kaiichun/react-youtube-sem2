@@ -8,19 +8,18 @@ import {
   UnstyledButton,
   LoadingOverlay,
 } from "@mantine/core";
-
 import { SlPencil } from "react-icons/sl";
 import { CiYoutube } from "react-icons/ci";
 import { AiOutlineDelete } from "react-icons/ai";
-
 import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
 import { useState, useMemo } from "react";
 import ReactPlayer from "react-player";
 import { useNavigate, Link } from "react-router-dom";
 import { notifications } from "@mantine/notifications";
 import { useHover } from "@mantine/hooks";
+// import Header from "../Header";
 import { useCookies } from "react-cookie";
-import { fetchVideos, addViews } from "../api/video";
+import { fetchTrendingVideos, addViews } from "../api/video";
 
 import React from "react";
 import {
@@ -37,15 +36,15 @@ import {
 import { GoVerified } from "react-icons/go";
 import axios from "axios";
 
-const Home = () => {
+const Trending = () => {
   const [cookies] = useCookies(["currentUser"]);
   const { currentUser } = cookies;
   const queryClient = useQueryClient();
-  const { isLoading, data: videos = [] } = useQuery({
+  const { isLoading, data: videos } = useQuery({
     queryKey: ["videos"],
-    queryFn: () => fetchVideos(currentUser ? currentUser.token : ""),
+    queryFn: () => fetchTrendingVideos(currentUser ? currentUser.token : ""),
   });
-  console.log(videos);
+
   return (
     <>
       <Grid>
@@ -112,4 +111,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default Trending;

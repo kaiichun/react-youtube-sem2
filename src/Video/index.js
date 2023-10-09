@@ -1,8 +1,14 @@
 // App.js
 import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
 import { notifications } from "@mantine/notifications";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
 import { fetchVideos, getVideos, addViews } from "../api/video";
+import {
+  addVideoComment,
+  fetchComments,
+  getVideoCommemts,
+} from "../api/comment";
+import axios from "axios";
 import { useCookies } from "react-cookie";
 import {
   Container,
@@ -10,6 +16,7 @@ import {
   TextInput,
   Card,
   Button,
+  Image,
   Group,
   Grid,
   Text,
@@ -22,22 +29,21 @@ import {
 import { RiThumbUpLine, RiThumbDownLine } from "react-icons/ri";
 import { PiShareFatLight } from "react-icons/pi";
 import VideoCard from "../Card";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
+import { subscribe, unSubscribe, likeVideo, unlikeVideo } from "../api/auth";
 
-export default function Video() {
+export default function Video({ videoSource }) {
   const [cookies] = useCookies(["currentUser"]);
   const { currentUser } = cookies;
   const { id } = useParams();
-  const [title, setTitle] = useState("");
-  const [viewCount, setViewCount] = useState(0);
-  const [description, setDescription] = useState("");
-  const [thumbnail, setThumbnail] = useState("");
-  const [video, setVideo] = useState("");
-  const [views, setViews] = useState("");
-  const [uploading, setUploading] = useState(false);
+  const [comment, setCommet] = useState("");
+  const [subscribedUsers, setSubscribedUsers] = useState("");
+  const queryClient = useQueryClient();
+  const videoRef = useRef(null);
+
   const { isLoading, data: v = {} } = useQuery({
-    queryKey: ["videos"],
+    queryKey: ["video"],
     queryFn: () => getVideos(id),
   });
 
@@ -46,21 +52,152 @@ export default function Video() {
     queryFn: () => addViews(id),
   });
 
+  // // create mutation};
+  const createCommentMutation = useMutation({
+    mutationFn: addVideoComment,
+    onSuccess: () => {},
+    onError: (error) => {
+      notifications.show({
+        title: error.response.data.message,
+        color: "red",
+      });
+    },
+  });
+
+  const handleAddNewComment = async (event) => {
+    event.preventDefault();
+    createCommentMutation.mutate({
+      data: JSON.stringify({
+        comments: comment,
+      }),
+      token: currentUser ? currentUser.token : "",
+    });
+    setCommet("");
+  };
+
+  const updateSubscribersMutation = useMutation({
+    mutationFn: subscribe,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["video"],
+      });
+      notifications.show({
+        title: "subscriber is updated successfully",
+        color: "green",
+      });
+    },
+    onError: (error) => {
+      console.log(error);
+      notifications.show({
+        title: error.response.data.message,
+        color: "red",
+      });
+    },
+  });
+
+  const handleSubscribeUpdate = async () => {
+    updateSubscribersMutation.mutate({
+      id: v.user._id,
+      token: currentUser ? currentUser.token : "",
+    });
+  };
+
+  const updateUnsubscribersMutation = useMutation({
+    mutationFn: unSubscribe,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["video"],
+      });
+      notifications.show({
+        title: "unsubscriber successfully",
+        color: "green",
+      });
+    },
+    onError: (error) => {
+      console.log(error);
+      notifications.show({
+        title: error.response.data.message,
+        color: "red",
+      });
+    },
+  });
+
+  const handleUnsubscribeUpdate = async () => {
+    updateUnsubscribersMutation.mutate({
+      id: v.user._id,
+      token: currentUser ? currentUser.token : "",
+    });
+  };
+
+  const updateLikeMutation = useMutation({
+    mutationFn: likeVideo,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["video"],
+      });
+    },
+    onError: (error) => {
+      console.log(error);
+      notifications.show({
+        title: error.response.data.message,
+        color: "red",
+      });
+    },
+  });
+
+  const handleLikeUpdate = async (event) => {
+    event.preventDefault();
+    updateLikeMutation.mutate({
+      id: id,
+      token: currentUser ? currentUser.token : "",
+    });
+  };
+
+  const updateUnlikeMutation = useMutation({
+    mutationFn: unlikeVideo,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["video"],
+      });
+    },
+    onError: (error) => {
+      console.log(error);
+      notifications.show({
+        title: error.response.data.message,
+        color: "red",
+      });
+    },
+  });
+
+  const handleUnlikeUpdate = async (event) => {
+    event.preventDefault();
+    updateUnlikeMutation.mutate({
+      id: id,
+      token: currentUser ? currentUser.token : "",
+    });
+  };
+
+  // const TotalLike = () => {
+  //   let total = 0;
+  //   v.user.likes.map((like) => (total = total + parseInt(like.likes)));
+  //   return total;
+  // };
+
   return (
     <Container fluid>
       <Grid>
         <Grid.Col span={9}>
           <div>
             <Group>
-              <video
-                width="100%"
-                height="720"
-                src={"http://localhost:1205/" + v.video}
-                title="YouTube video player"
-                frameborder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowfullscreen
-              />
+              <video ref={videoRef} controls width="640" height="360">
+                <source
+                  src={"http://localhost:1205/" + v.video}
+                  type="video/mp4"
+                  frameborder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowfullscreen
+                />
+              </video>
             </Group>
             <Space h="10px" />
             <Title size={24}> {v.title}</Title>
@@ -69,7 +206,7 @@ export default function Video() {
               <Group>
                 {v.user ? (
                   <>
-                    <img
+                    <Image
                       src={"http://localhost:1205/" + v.user.image}
                       alt="Login Picture"
                       style={{
@@ -88,13 +225,39 @@ export default function Video() {
                   </>
                 ) : null}
 
-                <Button>SUBSCRIBE</Button>
+                {cookies && cookies.currentUser.subscribedUsers ? (
+                  <Button
+                    onClick={() => {
+                      handleUnsubscribeUpdate();
+                    }}
+                  >
+                    Unsubscribe
+                  </Button>
+                ) : (
+                  <Button
+                    onClick={() => {
+                      handleSubscribeUpdate();
+                    }}
+                  >
+                    Subscribe
+                  </Button>
+                )}
               </Group>
               <Group position="right">
-                <Button variant="transparent" color="gray" size="md">
-                  <RiThumbUpLine /> 12K
+                <Button
+                  variant="transparent"
+                  color="gray"
+                  size="md"
+                  onClick={handleLikeUpdate}
+                >
+                  <RiThumbUpLine /> {v.user.likes}
                 </Button>
-                <Button variant="transparent" color="gray" size="md">
+                <Button
+                  variant="transparent"
+                  color="gray"
+                  size="md"
+                  onClick={handleUnlikeUpdate}
+                >
                   <RiThumbDownLine /> Dislike
                 </Button>
                 <Button variant="transparent" color="gray" size="md">
@@ -116,24 +279,45 @@ export default function Video() {
       </Grid>
       <Group>
         <Group position="left">
-          <Avatar
-            style={{ width: "50px", height: "50px", borderRadius: "50%" }}
-            src="https:/"
-          />
+          {cookies && cookies.currentUser ? (
+            <>
+              <Group>
+                <img
+                  src={cookies.currentUser.image}
+                  alt="Login Picture"
+                  style={{
+                    width: "38px",
+                    height: "38px",
+                    borderRadius: "50%",
+                  }}
+                />
+              </Group>
+              <Group>
+                <TextInput
+                  value={comment}
+                  placeholder="Enter the description here"
+                  style={{ border: "0px 0px 1px 0 px " }}
+                  onChange={(event) => setCommet(event.target.value)}
+                />
+                <Button onClick={handleAddNewComment}>Comment</Button>
+              </Group>
+            </>
+          ) : (
+            <>
+              <Group>
+                <TextInput
+                  value=""
+                  placeholder="Enter the description here"
+                  style={{ border: "0px 0px 1px 0 px " }}
+                />
+              </Group>
+            </>
+          )}
         </Group>
 
         {/* <Group>
             <Text style={{ fontSize: "14px" }}>John Doe 1 day ago</Text>
           </Group> */}
-
-        <Group>
-          {" "}
-          <TextInput
-            value=""
-            placeholder="Enter the description here"
-            style={{ border: "0px 0px 1px 0 px " }}
-          />
-        </Group>
       </Group>
     </Container>
   );
