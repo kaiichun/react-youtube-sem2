@@ -46,7 +46,7 @@ export default function Video({ videoSource }) {
   const queryClient = useQueryClient();
   const videoRef = useRef(null);
 
-  const { isLoading, data: v = {} } = useQuery({
+  const { isLoading, data: vid = {} } = useQuery({
     queryKey: ["video"],
     queryFn: () => getVideos(id),
   });
@@ -111,7 +111,7 @@ export default function Video({ videoSource }) {
 
   const handleSubscribeUpdate = async () => {
     updateSubscribersMutation.mutate({
-      id: v.user._id,
+      id: vid.user._id,
       token: currentUser ? currentUser.token : "",
     });
   };
@@ -138,7 +138,7 @@ export default function Video({ videoSource }) {
 
   const handleUnsubscribeUpdate = async () => {
     updateUnsubscribersMutation.mutate({
-      id: v.user._id,
+      id: vid.user._id,
       token: currentUser ? currentUser.token : "",
     });
   };
@@ -203,9 +203,9 @@ export default function Video({ videoSource }) {
         <Grid.Col span={12}>
           <div>
             <Group>
-              <video ref={videoRef} controls width="1200" height="600">
+              <video ref={videoRef} controls width="100%" height="600">
                 <source
-                  src={"http://localhost:1205/" + v.video}
+                  src={"http://localhost:1205/" + vid.video}
                   type="video/mp4"
                   frameborder="0"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -214,19 +214,19 @@ export default function Video({ videoSource }) {
               </video>
             </Group>
             <Space h="10px" />
-            <Title size={24}> {v.title}</Title>
+            <Title size={24}> {vid.title}</Title>
             <Space h="15px" />
             <Group position="apart">
               <Group>
-                {v.user ? (
+                {vid.user ? (
                   <>
                     <UnstyledButton
                       component={Link}
-                      to={"/channel/" + v.user._id}
+                      to={"/channel/" + vid.user._id}
                       variant="transparent"
                     >
                       <img
-                        src={"http://localhost:1205/" + v.user.image}
+                        src={"http://localhost:1205/" + vid.user.image}
                         alt="Login Picture"
                         style={{
                           width: "46px",
@@ -237,18 +237,18 @@ export default function Video({ videoSource }) {
                     </UnstyledButton>
                     <div style={{ paddingTop: "2px" }}>
                       <Text size={15} fw={500}>
-                        {v.user.name}
+                        {vid.user.name}
                       </Text>
-                      <Text size={12}>{v.user.subscribers} subscribers</Text>
+                      <Text size={12}>{vid.user.subscribers} subscribers</Text>
                       <Space h="5px" />
                     </div>
                   </>
                 ) : null}
 
-                {v &&
-                v.user &&
-                v.user.subscribedUsers &&
-                v.user.subscribedUsers.includes(cookies.currentUser._id) ? (
+                {vid &&
+                vid.user &&
+                vid.user.subscribedUsers &&
+                vid.user.subscribedUsers.includes(cookies.currentUser._id) ? (
                   <Button
                     onClick={() => {
                       handleUnsubscribeUpdate();
@@ -274,7 +274,7 @@ export default function Video({ videoSource }) {
                   onClick={handleLikeUpdate}
                 >
                   <RiThumbUpLine />
-                  {/* {v.user.likes} */}
+                  {vid.likes.length}
                 </Button>
                 <Button
                   variant="transparent"
@@ -292,10 +292,10 @@ export default function Video({ videoSource }) {
             <Space h="20px" />
             <Card style={{ backgroundColor: "#F1F3F5" }} radius="md">
               <Text fz="sm" fw={700}>
-                {v.views} views • {v.createdAt}
+                {vid.views} views • {vid.createdAt}
               </Text>
               <Space h="5px" />
-              <Text fz="sm">{v.description}</Text>
+              <Text fz="sm">{vid.description}</Text>
             </Card>
             <Space h="20px" />
           </div>
@@ -356,7 +356,7 @@ export default function Video({ videoSource }) {
               comments.map((com) => (
                 <Grid.Col span={12}>
                   <Space h={15} />
-                  <Divider w="57vw" />
+                  <Divider w="100%" />
                   <Space h={15} />
                   <Group>
                     <img
@@ -383,8 +383,8 @@ export default function Video({ videoSource }) {
             ) : (
               <>
                 <Space h={15} />
-                <Divider w="57vw" />
-                <Space h={15} />
+                <Divider w="100%" />
+                <Space h={100} />
                 <Group position="center">
                   <Text size={16}>No comments yet</Text>
                 </Group>

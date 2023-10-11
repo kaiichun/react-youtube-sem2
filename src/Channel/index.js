@@ -34,7 +34,7 @@ import {
   Loader,
 } from "@mantine/core";
 import { fetchPosts } from "../api/post";
-import { getUser, subscribe, unSubscribe } from "../api/auth";
+import { fetchUsers, subscribe, unSubscribe } from "../api/auth";
 import { fetchChannels, fetchVideos, getChannel } from "../api/video";
 import { getSpaceUntilMaxLength } from "@testing-library/user-event/dist/utils";
 
@@ -56,14 +56,14 @@ const Channel = () => {
 
   const { data: users = [] } = useQuery({
     queryKey: ["users"],
-    queryFn: () => getUser(id),
+    queryFn: () => fetchUsers(),
   });
 
   const updateSubscribersMutation = useMutation({
     mutationFn: subscribe,
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["post"],
+        queryKey: ["users"],
       });
       notifications.show({
         title: "subscriber is updated successfully",
@@ -92,7 +92,7 @@ const Channel = () => {
     mutationFn: unSubscribe,
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["post"],
+        queryKey: ["users"],
       });
       notifications.show({
         title: "unsubscriber successfully",
@@ -119,72 +119,69 @@ const Channel = () => {
 
   return (
     <>
-      <Grid>
-        {users
-          ? users
-              .filter((f) => f.user._id === id)
-              .map((v) => {
-                return (
-                  <Grid.Col span={12}>
-                    <Container>
-                      <Group position="apart">
-                        <Group>
-                          <UnstyledButton
-                            component={Link}
-                            to={"/channel/" + v.user._id}
-                            variant="transparent"
-                          >
-                            <img
-                              src={"http://localhost:1205/" + v.user.image}
-                              alt="Login Picture"
-                              style={{
-                                width: "100px",
-                                height: "100px",
-                                borderRadius: "50%",
-                              }}
-                            />
-                          </UnstyledButton>
-                          <div style={{ paddingTop: "2px" }}>
-                            <Text size={18} fw={500}>
-                              {v.user.name}
-                            </Text>
-                            <Text size={12}>
-                              {v.user.subscribers} subscribers
-                            </Text>
-                            <Space h="5px" />
-                          </div>
-                        </Group>
-                        {v &&
-                        v.user &&
-                        v.user.subscribedUsers &&
-                        v.user.subscribedUsers.includes(
-                          cookies.currentUser._id
-                        ) ? (
-                          <Button
-                            onClick={() => {
-                              handleUnsubscribeUpdate();
+      <Grid className="abc">
+        {users ? (
+          users
+            .filter((f) => f._id === id)
+            .map((v) => {
+              return (
+                <Grid.Col span={12}>
+                  <Container>
+                    <Group position="apart">
+                      <Group>
+                        <UnstyledButton
+                          component={Link}
+                          to={"/channel/" + v._id}
+                          variant="transparent"
+                        >
+                          <img
+                            src={"http://localhost:1205/" + v.image}
+                            alt="Login Picture"
+                            style={{
+                              width: "100px",
+                              height: "100px",
+                              borderRadius: "50%",
                             }}
-                          >
-                            Unsubscribe
-                          </Button>
-                        ) : (
-                          <Button
-                            onClick={() => {
-                              handleSubscribeUpdate();
-                            }}
-                          >
-                            Subscribe
-                          </Button>
-                        )}
+                          />
+                        </UnstyledButton>
+                        <div style={{ paddingTop: "2px" }}>
+                          <Text size={18} fw={500}>
+                            {v.name}
+                          </Text>
+                          <Text size={12}>{v.subscribers} subscribers</Text>
+                          <Space h="5px" />
+                        </div>
                       </Group>
-                    </Container>
-                    <Space h="20px" />
-                    <Divider />
-                    <Space h="20px" />
-                  </Grid.Col>
-                );
-              })
-          : null}
+                      {v &&
+                      v.subscribedUsers &&
+                      v.subscribedUsers.includes(cookies.currentUser._id) ? (
+                        <Button
+                          onClick={() => {
+                            handleUnsubscribeUpdate();
+                          }}
+                        >
+                          Unsubscribe
+                        </Button>
+                      ) : (
+                        <Button
+                          onClick={() => {
+                            handleSubscribeUpdate();
+                          }}
+                        >
+                          Subscribe
+                        </Button>
+                      )}
+                    </Group>
+                  </Container>
+                  <Space h="20px" />
+                  <Divider />
+                  <Space h="20px" />
+                </Grid.Col>
+              );
+            })
+        ) : (
+          <>def</>
+        )}
         {videos
           ? videos
               .filter((f) => f.user._id === id)

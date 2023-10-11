@@ -12,6 +12,18 @@ export const fetchVideos = async (keyword = "") => {
   return response.data;
 };
 
+export const fetchPersonalVideo = async (token = "") => {
+  const response = await axios({
+    method: "GET",
+    url: API_URL + "/videos/studio",
+    headers: {
+      Authorization: "Bearer " + token,
+    },
+  });
+  console.log(response.data);
+  return response.data;
+};
+
 export const fetchTrendingVideos = async (token = "") => {
   const response = await axios({
     method: "GET",

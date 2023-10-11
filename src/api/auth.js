@@ -14,6 +14,14 @@ export const loginUser = async (data) => {
   return response.data;
 };
 
+export const fetchUsers = async () => {
+  const response = await axios({
+    method: "GET",
+    url: API_URL + "/users",
+  });
+  return response.data;
+};
+
 export const addProfileImage = async (file) => {
   const formData = new FormData();
   formData.append("image", file);
@@ -45,7 +53,7 @@ export const uploadProfileImage = async (file) => {
 export const getUser = async (id) => {
   const response = await axios({
     method: "GET",
-    url: API_URL + "/auth/" + id,
+    url: API_URL + "/users/" + id,
   });
   return response.data;
 };
@@ -53,7 +61,7 @@ export const getUser = async (id) => {
 export const updateUser = async ({ id, data, token = "" }) => {
   const response = await axios({
     method: "PUT",
-    url: API_URL + "/auth/" + id,
+    url: API_URL + "/users/" + id,
     headers: {
       "Content-Type": "application/json",
       Authorization: "Bearer " + token,

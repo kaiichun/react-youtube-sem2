@@ -57,8 +57,8 @@ export default function PostAdd() {
   const queryClient = useQueryClient();
 
   const { data: posts = [] } = useQuery({
-    queryKey: ["post"],
-    queryFn: () => fetchPosts(id),
+    queryKey: ["postcontent"],
+    queryFn: () => fetchPosts(),
   });
 
   //   const searchVideoMutation = useMutation({
@@ -71,6 +71,9 @@ export default function PostAdd() {
   const createPostMutation = useMutation({
     mutationFn: addPostDetails,
     onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["postcontent"],
+      });
       notifications.show({
         title: "New Video Added",
         color: "green",
@@ -135,7 +138,7 @@ export default function PostAdd() {
                     borderRadius: "50%",
                   }}
                 />
-                <Text size={16} style={{ paddingBottom: "10px" }}>
+                <Text size={18} style={{ paddingBottom: "8px" }}>
                   {cookies.currentUser.name}
                 </Text>
               </Group>
@@ -207,23 +210,50 @@ export default function PostAdd() {
       ) : (
         <></>
       )}
+      <Space h="30px" />
 
-      <Group>
-        <img
-          src={"http://localhost:1205/" + posts.postimage}
-          alt="Login Picture"
-          style={{
-            width: "38px",
-            height: "38px",
-            borderRadius: "50%",
-          }}
-        />
-        <div style={{ paddingTop: "8px", paddingLeft: "0px" }}>
-          <Text size={14}>
-            <strong>{posts.content}</strong>
-          </Text>
-        </div>
-      </Group>
+      {posts && posts.length > 0 ? (
+        posts
+          .filter((f) => f.user._id === id)
+          .map((v) => {
+            return (
+              <>
+                <Group position="center">
+                  <Card radius="md" withBorder style={{ width: "700px" }}>
+                    <div style={{ paddingTop: "8px", paddingLeft: "0px" }}>
+                      <Text size={18}>
+                        <strong>{v.content}</strong>
+                      </Text>
+                    </div>
+                    <Space h="15px" />
+                    {v.postimage && (
+                      <img
+                        src={"http://localhost:1205/" + v.postimage}
+                        alt="Login Picture"
+                        style={{
+                          width: "100%",
+                          height: "500px",
+                          borderRadius: "1%",
+                        }}
+                      />
+                    )}
+                    <Space h="20px" />
+                    <Text fz="xs" c="dimmed">
+                      {v.createdAt}
+                    </Text>
+                  </Card>
+                </Group>
+                <Space h="30px" />
+              </>
+            );
+          })
+      ) : (
+        <>
+          <Group position="center">
+            <Text size={16}>No Post</Text>
+          </Group>
+        </>
+      )}
     </>
   );
 }

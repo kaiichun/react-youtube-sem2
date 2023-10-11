@@ -47,11 +47,10 @@ function VideoEdit() {
       // show add success message
       // 显示添加成功消息
       notifications.show({
-        title: "Product is updated successfully",
+        title: "Video is updated successfully",
         color: "green",
       });
-      // redirect back to home page
-      // 重定向回主页
+
       navigate("/studio");
     },
     onError: (error) => {
@@ -85,7 +84,7 @@ function VideoEdit() {
       setThumbnail(data.thumbnail_url);
       setUploading(false);
       notifications.show({
-        title: "Image uploaded successfully",
+        title: "Thumbnail uploaded successfully",
         color: "yellow",
       });
     },

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import "../App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "../Style/menu.css"; // 导入CSS文件
@@ -55,6 +55,7 @@ import {
   useMantineTheme,
   Input,
   TextInput,
+  NativeSelect,
   Avatar,
   Loader,
 } from "@mantine/core";
@@ -81,13 +82,13 @@ const AppWrapper = ({ children }) => {
   const theme = useMantineTheme();
   const [opened, setOpened] = useState(false);
   const [isOpen, { close, open }] = useDisclosure(false);
-
-  const [searchTerm, setSearchTerm] = useState("");
-  const [image, setImage] = useState("");
+  const videoRef = useRef(null);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [thumbnail, setThumbnail] = useState("");
   const [video, setVideo] = useState("");
+  const [status, setStatus] = useState("");
+
   const [currentVideo, setCurrentVideo] = useState("");
   const [keywords, setKeywords] = useState("");
   const [cookies, setCookies, removeCookies] = useCookies(["currentUser"]);
@@ -129,6 +130,7 @@ const AppWrapper = ({ children }) => {
         description: description,
         video: video,
         thumbnail: thumbnail,
+        status: status,
       }),
       token: currentUser ? currentUser.token : "",
     });
@@ -334,66 +336,102 @@ const AppWrapper = ({ children }) => {
                       <>
                         <Title order={4}>Details</Title>
                         <Group position="apart">
-                          <div className="col-9">
-                            <TextInput
-                              label="Title"
-                              value={title}
-                              onChange={(event) => setTitle(event.target.value)}
-                            />
-                            <TextInput
-                              label="Description"
-                              value={description}
-                              onChange={(event) =>
-                                setDescription(event.target.value)
-                              }
-                            />{" "}
-                            <Text>Thumbnail</Text>
-                            {thumbnail && thumbnail !== "" ? (
-                              <>
-                                <Image
-                                  src={"http://localhost:1205/" + thumbnail}
-                                  width="50vw"
-                                  height="50vh"
+                          <Grid>
+                            <Grid.Col span={6}>
+                              <div className="">
+                                <TextInput
+                                  label="Title"
+                                  value={title}
+                                  onChange={(event) =>
+                                    setTitle(event.target.value)
+                                  }
                                 />
-                                <Button
-                                  color="dark"
-                                  mt="15px"
-                                  onClick={() => setThumbnail("")}
+                                <TextInput
+                                  label="Description"
+                                  value={description}
+                                  onChange={(event) =>
+                                    setDescription(event.target.value)
+                                  }
+                                />{" "}
+                                <Text>Thumbnail</Text>
+                                {thumbnail && thumbnail !== "" ? (
+                                  <>
+                                    <Image
+                                      src={"http://localhost:1205/" + thumbnail}
+                                      width="100%"
+                                      height="220px"
+                                    />
+                                    <Button
+                                      color="dark"
+                                      mt="15px"
+                                      mb="15px"
+                                      onClick={() => setThumbnail("")}
+                                    >
+                                      Remove
+                                    </Button>
+                                  </>
+                                ) : (
+                                  <Dropzone
+                                    multiple={false}
+                                    accept={IMAGE_MIME_TYPE}
+                                    h={100}
+                                    onDrop={(files) => {
+                                      handleThumbnailUpload(files);
+                                    }}
+                                  >
+                                    <Title order={6} align="center" py="20px">
+                                      Upload thumbnail
+                                    </Title>
+                                  </Dropzone>
+                                )}
+                                <div>
+                                  <span>Visibility</span>
+                                  <select
+                                    className="form-control"
+                                    id="user-role"
+                                    value={status}
+                                    onChange={(event) => {
+                                      setStatus(event.target.value);
+                                    }}
+                                  >
+                                    <option value="Draft">Draft</option>
+                                    <option value="Publish">Publish</option>
+                                  </select>
+                                </div>
+                              </div>
+                            </Grid.Col>
+                            <Grid.Col span={6}>
+                              <Group>
+                                <video
+                                  ref={videoRef}
+                                  controls
+                                  width="600"
+                                  height="280"
                                 >
-                                  Remove
-                                </Button>
-                              </>
-                            ) : (
-                              <Dropzone
-                                multiple={false}
-                                accept={IMAGE_MIME_TYPE}
-                                onDrop={(files) => {
-                                  handleThumbnailUpload(files);
-                                }}
-                              >
-                                <Title order={6} align="center" py="20px">
-                                  Upload thumbnail
-                                </Title>
-                              </Dropzone>
-                            )}
-                          </div>
-                          <Group>
-                            <video
-                              src={"http://localhost:1205/" + video}
-                              width="50vw"
-                              height="50vh"
-                            />
-                          </Group>
-                          <Space h="20px" />
+                                  <source
+                                    src={"http://localhost:1205/" + video}
+                                    type="video/mp4"
+                                    frameborder="0"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                    allowfullscreen
+                                  />
+                                </video>
+                              </Group>
+                            </Grid.Col>
+                            <Space h="20px" />
+                          </Grid>
                         </Group>
-                        <Button
-                          onClick={handleAddNewVideo}
-                          // onClick={() => {
-                          //   handleAddNewVideo.clean();
-                          // }}
-                        >
-                          Publish
-                        </Button>
+                        <Group position="right">
+                          <Button
+                            mt="15px"
+                            onClick={handleAddNewVideo}
+                            // onClick={() => {
+                            //   handleAddNewVideo.clean();
+                            // }}
+                          >
+                            Publish
+                          </Button>
+                        </Group>
                       </>
                     ) : (
                       //
@@ -572,6 +610,7 @@ const AppWrapper = ({ children }) => {
                           onClick={() => {
                             // clear the currentUser cookie to logout
                             removeCookies("currentUser");
+                            navigate("/");
                           }}
                         >
                           <Group>
