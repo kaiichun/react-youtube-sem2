@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "../Style/menu.css"; // 导入CSS文件
@@ -67,9 +67,10 @@ import {
   addVideo,
   uploadVideoImage,
   uploadVideo,
+  fetchVideos,
 } from "../api/video";
 import { useCookies } from "react-cookie";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import SideBar from "../SideBar";
 
@@ -80,14 +81,26 @@ const AppWrapper = ({ children }) => {
   const theme = useMantineTheme();
   const [opened, setOpened] = useState(false);
   const [isOpen, { close, open }] = useDisclosure(false);
+
+  const [searchTerm, setSearchTerm] = useState("");
   const [image, setImage] = useState("");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [thumbnail, setThumbnail] = useState("");
   const [video, setVideo] = useState("");
+  const [currentVideo, setCurrentVideo] = useState("");
   const [keywords, setKeywords] = useState("");
   const [cookies, setCookies, removeCookies] = useCookies(["currentUser"]);
   const { currentUser } = cookies;
+  const queryClient = useQueryClient();
+
+  const searchVideoMutation = useMutation({
+    mutationFn: fetchVideos,
+    onSuccess: (data) => {
+      console.log(data);
+      queryClient.setQueryData(["videos"], data);
+    },
+  });
 
   // // create mutation};
   const createMutation = useMutation({
@@ -168,6 +181,18 @@ const AppWrapper = ({ children }) => {
     uploadVideoMutation.mutate(files[0]);
   };
 
+  // useEffect(() => {
+  //   let newList = video ? [...video] : [];
+
+  //   if (searchTerm) {
+  //     newList = newList.filter(
+  //       (i) => i.title.toLowerCase().indexOf(searchTerm.toLowerCase()) >= 0
+  //     );
+  //   }
+
+  //   setCurrentVideo(newList);
+  // }, [video, searchTerm]);
+
   return (
     <AppShell
       navbarOffsetBreakpoint="sm"
@@ -217,6 +242,10 @@ const AppWrapper = ({ children }) => {
                 }}
               >
                 <Input
+                  type="text"
+                  onChange={(e) => {
+                    searchVideoMutation.mutate(e.target.value);
+                  }}
                   placeholder="Search"
                   radius="lg"
                   rightSection={<AiOutlineSearch />}
@@ -270,7 +299,7 @@ const AppWrapper = ({ children }) => {
                           variant="transparent"
                           size="sm"
                           component={Link}
-                          to="/createpost"
+                          to="/create-post"
                         >
                           <Group>
                             <IoCreateOutline

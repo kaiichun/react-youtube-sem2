@@ -2,7 +2,7 @@
 import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
 import { notifications } from "@mantine/notifications";
 import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
-import { fetchVideos, getVideos, addViews } from "../api/video";
+import { fetcseos, getVideos, addViews } from "../api/video";
 import {
   addVideoComment,
   fetchComments,
@@ -10,6 +10,8 @@ import {
 } from "../api/comment";
 import axios from "axios";
 import { useCookies } from "react-cookie";
+import { useNavigate, Link } from "react-router-dom";
+import { Tabs } from "@mantine/core";
 import {
   Container,
   Space,
@@ -23,6 +25,7 @@ import {
   Title,
   Avatar,
   Flex,
+  ScrollArea,
   UnstyledButton,
   Divider,
 } from "@mantine/core";
@@ -37,6 +40,7 @@ export default function Video({ videoSource }) {
   const [cookies] = useCookies(["currentUser"]);
   const { currentUser } = cookies;
   const { id } = useParams();
+  const [inputValue, setInputValue] = useState("");
   const [comment, setCommet] = useState("");
   const [subscribedUsers, setSubscribedUsers] = useState("");
   const queryClient = useQueryClient();
@@ -47,6 +51,11 @@ export default function Video({ videoSource }) {
     queryFn: () => getVideos(id),
   });
 
+  const { data: comments = [] } = useQuery({
+    queryKey: ["comments"],
+    queryFn: () => fetchComments(id),
+  });
+
   const {} = useQuery({
     queryKey: ["views"],
     queryFn: () => addViews(id),
@@ -55,7 +64,11 @@ export default function Video({ videoSource }) {
   // // create mutation};
   const createCommentMutation = useMutation({
     mutationFn: addVideoComment,
-    onSuccess: () => {},
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["comments"],
+      });
+    },
     onError: (error) => {
       notifications.show({
         title: error.response.data.message,
@@ -69,6 +82,7 @@ export default function Video({ videoSource }) {
     createCommentMutation.mutate({
       data: JSON.stringify({
         comments: comment,
+        videoId: id,
       }),
       token: currentUser ? currentUser.token : "",
     });
@@ -186,10 +200,10 @@ export default function Video({ videoSource }) {
   return (
     <Container fluid>
       <Grid>
-        <Grid.Col span={9}>
+        <Grid.Col span={12}>
           <div>
             <Group>
-              <video ref={videoRef} controls width="640" height="360">
+              <video ref={videoRef} controls width="1200" height="600">
                 <source
                   src={"http://localhost:1205/" + v.video}
                   type="video/mp4"
@@ -206,15 +220,21 @@ export default function Video({ videoSource }) {
               <Group>
                 {v.user ? (
                   <>
-                    <Image
-                      src={"http://localhost:1205/" + v.user.image}
-                      alt="Login Picture"
-                      style={{
-                        width: "46px",
-                        height: "46px",
-                        borderRadius: "50%",
-                      }}
-                    />
+                    <UnstyledButton
+                      component={Link}
+                      to={"/channel/" + v.user._id}
+                      variant="transparent"
+                    >
+                      <img
+                        src={"http://localhost:1205/" + v.user.image}
+                        alt="Login Picture"
+                        style={{
+                          width: "46px",
+                          height: "46px",
+                          borderRadius: "50%",
+                        }}
+                      />
+                    </UnstyledButton>
                     <div style={{ paddingTop: "2px" }}>
                       <Text size={15} fw={500}>
                         {v.user.name}
@@ -225,7 +245,10 @@ export default function Video({ videoSource }) {
                   </>
                 ) : null}
 
-                {cookies && cookies.currentUser.subscribedUsers ? (
+                {v &&
+                v.user &&
+                v.user.subscribedUsers &&
+                v.user.subscribedUsers.includes(cookies.currentUser._id) ? (
                   <Button
                     onClick={() => {
                       handleUnsubscribeUpdate();
@@ -250,7 +273,8 @@ export default function Video({ videoSource }) {
                   size="md"
                   onClick={handleLikeUpdate}
                 >
-                  <RiThumbUpLine /> {v.user.likes}
+                  <RiThumbUpLine />
+                  {/* {v.user.likes} */}
                 </Button>
                 <Button
                   variant="transparent"
@@ -273,52 +297,102 @@ export default function Video({ videoSource }) {
               <Space h="5px" />
               <Text fz="sm">{v.description}</Text>
             </Card>
-            {/* <Comments /> */}
+            <Space h="20px" />
           </div>
+
+          <Space h={25} />
+          <Group>
+            {cookies && cookies.currentUser ? (
+              <>
+                <Group style={{ paddingLeft: "12px" }}>
+                  <img
+                    src={"http://localhost:1205/" + cookies.currentUser.image}
+                    alt="Login Picture"
+                    style={{
+                      width: "38px",
+                      height: "38px",
+                      borderRadius: "50%",
+                    }}
+                  />
+                  <div>
+                    <TextInput
+                      placeholder="Add a comment..."
+                      variant="unstyled"
+                      w={680}
+                      radius="md"
+                      value={comment}
+                      onChange={(event) => setCommet(event.target.value)}
+                    />
+                  </div>
+                  {comment.length > 0 && (
+                    <div>
+                      <Group position="right">
+                        <Button
+                          style={{ margin: "0px" }}
+                          onClick={handleAddNewComment}
+                        >
+                          Comment
+                        </Button>
+                      </Group>
+                    </div>
+                  )}
+                </Group>
+              </>
+            ) : (
+              <>
+                <Group>
+                  <TextInput
+                    value=""
+                    placeholder="Enter the description here"
+                    style={{ border: "0px 0px 1px 0 px " }}
+                  />
+                </Group>
+              </>
+            )}
+          </Group>
+
+          <ScrollArea.Autosize h={800}>
+            {comments && comments.length > 0 ? (
+              comments.map((com) => (
+                <Grid.Col span={12}>
+                  <Space h={15} />
+                  <Divider w="57vw" />
+                  <Space h={15} />
+                  <Group>
+                    <img
+                      src={"http://localhost:1205/" + com.user.image}
+                      alt="Login Picture"
+                      style={{
+                        width: "38px",
+                        height: "38px",
+                        borderRadius: "50%",
+                      }}
+                    />
+                    <div style={{ paddingTop: "8px", paddingLeft: "0px" }}>
+                      <Text size={14}>
+                        <strong style={{ paddingRight: "10px" }}>
+                          {com.user.name}
+                        </strong>
+                        {com.user.createdAt}
+                      </Text>
+                      <Text size={18}>{com.comments}</Text>
+                    </div>
+                  </Group>
+                </Grid.Col>
+              ))
+            ) : (
+              <>
+                <Space h={15} />
+                <Divider w="57vw" />
+                <Space h={15} />
+                <Group position="center">
+                  <Text size={16}>No comments yet</Text>
+                </Group>
+              </>
+            )}
+          </ScrollArea.Autosize>
         </Grid.Col>
       </Grid>
-      <Group>
-        <Group position="left">
-          {cookies && cookies.currentUser ? (
-            <>
-              <Group>
-                <img
-                  src={cookies.currentUser.image}
-                  alt="Login Picture"
-                  style={{
-                    width: "38px",
-                    height: "38px",
-                    borderRadius: "50%",
-                  }}
-                />
-              </Group>
-              <Group>
-                <TextInput
-                  value={comment}
-                  placeholder="Enter the description here"
-                  style={{ border: "0px 0px 1px 0 px " }}
-                  onChange={(event) => setCommet(event.target.value)}
-                />
-                <Button onClick={handleAddNewComment}>Comment</Button>
-              </Group>
-            </>
-          ) : (
-            <>
-              <Group>
-                <TextInput
-                  value=""
-                  placeholder="Enter the description here"
-                  style={{ border: "0px 0px 1px 0 px " }}
-                />
-              </Group>
-            </>
-          )}
-        </Group>
-
-        {/* <Group>
-            <Text style={{ fontSize: "14px" }}>John Doe 1 day ago</Text>
-          </Group> */}
-      </Group>
     </Container>
   );
 }

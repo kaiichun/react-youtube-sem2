@@ -30,8 +30,9 @@ import {
 } from "@mantine/core";
 
 import Home from "../Home";
-
+import { getUser } from "../api/auth";
 import React, { useState, useEffect } from "react";
+import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
 import {
   AppShell,
   Navbar,
@@ -47,10 +48,17 @@ import {
 } from "@mantine/core";
 import { useCookies } from "react-cookie";
 import { SiAsda } from "react-icons/si";
+import { useParams } from "react-router-dom";
 
 export default function SideBar() {
   const [cookies] = useCookies(["currentUser"]);
   const { currentUser } = cookies;
+  const { id } = useParams();
+  const { isLoading, data: users } = useQuery({
+    queryKey: ["auth", id],
+    queryFn: () => getUser(id),
+  });
+
   return (
     <Navbar width={{ base: 280 }} style={{ border: 0 }}>
       {/* 这里是小屏幕版本的导航栏内容 */}
@@ -94,87 +102,75 @@ export default function SideBar() {
           </Link>
 
           <Divider mt="6px" mb="6px" />
-
-          {cookies && cookies.currentUser ? (
-            <>
-              <div>
-                <Title order={5} style={{ paddingLeft: "6px" }}>
-                  Subscriptions
-                </Title>
-                <Link
-                  to="/:id"
-                  style={{ textDecoration: "none", color: "inherit" }}
-                >
+          <Grid>
+            <Title
+              order={6}
+              style={{ paddingLeft: "14px", paddingTop: "12px" }}
+            >
+              Subscriptions
+            </Title>
+            {cookies && cookies.currentUser ? (
+              <>
+                <Grid.Col span={12}>
+                  <Link
+                    to="/:id"
+                    style={{ textDecoration: "none", color: "inherit" }}
+                  >
+                    <div className="item">
+                      <img
+                        src={
+                          "http://localhost:1205/" + cookies.currentUser.image
+                        }
+                        alt="Login Picture"
+                        className="Channel-Icon"
+                        style={{
+                          paddingTop: "2px",
+                          width: "26px",
+                          height: "26px",
+                          borderRadius: "50%",
+                        }}
+                      />
+                      {cookies.currentUser.name}
+                    </div>
+                  </Link>
                   <div className="item">
-                    <img
-                      src="https://media.istockphoto.com/id/1073963836/vector/circus-bear.jpg?s=612x612&w=0&k=20&c=nncg45p-9utjsIGn0m59rl1gnO5UWwTSA07XGMcEl1c="
-                      alt="Login Picture"
-                      className="Channel-Icon"
-                      style={{
-                        width: "26px",
-                        height: "26px",
-                        borderRadius: "50%",
-                      }}
-                    />
-                    Da Bao
+                    <BiChevronDown className="Menu-Icon" />
+                    Show More
                   </div>
-                </Link>
-                <Link
-                  to="/:id"
-                  style={{ textDecoration: "none", color: "inherit" }}
-                >
-                  <div className="item">
-                    <img
-                      src="https://avatars.githubusercontent.com/u/131941?v=4"
-                      alt="Login Picture"
-                      className="Channel-Icon"
-                      style={{
-                        width: "26px",
-                        height: "26px",
-                        borderRadius: "50%",
-                      }}
-                    />
-                    Kai Chun
-                  </div>
-                </Link>
-                <div className="item">
-                  <BiChevronDown className="Menu-Icon" />
-                  Show More
+                </Grid.Col>
+              </>
+            ) : (
+              <>
+                <div className="login" style={{ paddingLeft: "12px" }}>
+                  <p>
+                    Sign in to like videos,
+                    <br /> comment, and subscribe.{" "}
+                  </p>
+                  <Button
+                    component={Link}
+                    to="/login"
+                    variant="outline"
+                    radius="xl"
+                    size="sm"
+                    leftIcon={<VscAccount size="20px" p="0px" />}
+                    style={{
+                      fontStyle: "bolder",
+                      padding: "10px 10px",
+                      fontWeight: "700",
+                      width: "100px",
+                      backgroundColor: "transparent",
+                      border: "1px solid #E9ECEF",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "1px",
+                    }}
+                  >
+                    Sign in
+                  </Button>
                 </div>
-              </div>
-            </>
-          ) : (
-            <>
-              <div className="login" style={{ paddingLeft: "12px" }}>
-                <p>
-                  Sign in to like videos,
-                  <br /> comment, and subscribe.{" "}
-                </p>
-                <Button
-                  component={Link}
-                  to="/login"
-                  variant="outline"
-                  radius="xl"
-                  size="sm"
-                  leftIcon={<VscAccount size="20px" p="0px" />}
-                  style={{
-                    fontStyle: "bolder",
-                    padding: "10px 10px",
-                    fontWeight: "700",
-                    width: "100px",
-                    backgroundColor: "transparent",
-                    border: "1px solid #E9ECEF",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "1px",
-                  }}
-                >
-                  Sign in
-                </Button>
-              </div>
-            </>
-          )}
-
+              </>
+            )}
+          </Grid>
           <Divider mt="8px" mb="10px" />
           <Title className="title" order={6} style={{ paddingLeft: "12px" }}>
             Explore

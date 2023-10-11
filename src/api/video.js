@@ -1,14 +1,12 @@
 import axios from "axios";
 
 import { API_URL } from "./data";
+import { Title } from "@mantine/core";
 
-export const fetchVideos = async (token = "") => {
+export const fetchVideos = async (keyword = "") => {
   const response = await axios({
     method: "GET",
-    url: API_URL + "/videos",
-    headers: {
-      Authorization: "Bearer " + token,
-    },
+    url: API_URL + "/videos?" + (keyword !== "" ? "keyword=" + keyword : ""),
   });
   console.log(response.data);
   return response.data;
@@ -26,10 +24,23 @@ export const fetchTrendingVideos = async (token = "") => {
   return response.data;
 };
 
+export const fetchChannels = async () => {
+  const response = await axios.get(API_URL + "/videos/channels");
+  return response.data;
+};
+
 export const getVideos = async (id) => {
   const response = await axios({
     method: "GET",
     url: API_URL + "/videos/" + id,
+  });
+  return response.data;
+};
+
+export const getChannel = async (id) => {
+  const response = await axios({
+    method: "GET",
+    url: API_URL + "/videos/channel/" + id,
   });
   return response.data;
 };

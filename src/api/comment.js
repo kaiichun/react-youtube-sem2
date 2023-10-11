@@ -15,19 +15,7 @@ export const addVideoComment = async ({ data, token = "" }) => {
   return response.data;
 };
 
-export const fetchComments = async ({ videoId, token = "" }) => {
-  const response = await axios({
-    method: "GET",
-    url: API_URL + "/comments/" + videoId,
-    headers: {
-      Authorization: "Bearer " + token,
-    },
-  });
-  console.log(response.data);
-  return response.data;
-};
-
-export const getVideoCommemts = async (id) => {
+export const fetchComments = async (id) => {
   const response = await axios({
     method: "GET",
     url: API_URL + "/comments/" + id,

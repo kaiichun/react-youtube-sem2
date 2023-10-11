@@ -43,9 +43,8 @@ const Home = () => {
   const queryClient = useQueryClient();
   const { isLoading, data: videos = [] } = useQuery({
     queryKey: ["videos"],
-    queryFn: () => fetchVideos(currentUser ? currentUser.token : ""),
+    queryFn: () => fetchVideos(),
   });
-  console.log(videos);
   return (
     <>
       <Grid>
