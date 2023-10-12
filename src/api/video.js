@@ -161,3 +161,14 @@ export const deleteVideo = async ({ id = "", token = "" }) => {
   });
   return response.data;
 };
+
+export const deleteVideoAdmin = async ({ id = "", token = "" }) => {
+  const response = await axios({
+    method: "DELETE",
+    url: API_URL + "/videos/admin/" + id,
+    headers: {
+      Authorization: "Bearer " + token,
+    },
+  });
+  return response.data;
+};

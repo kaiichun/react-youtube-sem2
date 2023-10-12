@@ -63,3 +63,14 @@ export const deletePost = async ({ id = "", token = "" }) => {
   });
   return response.data;
 };
+
+export const deletePostAdmin = async ({ id = "", token = "" }) => {
+  const response = await axios({
+    method: "DELETE",
+    url: API_URL + "/posts/admin/" + id,
+    headers: {
+      Authorization: "Bearer " + token,
+    },
+  });
+  return response.data;
+};

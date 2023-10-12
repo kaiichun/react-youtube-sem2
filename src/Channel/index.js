@@ -15,7 +15,6 @@ import {
   Image,
   Group,
   Space,
-  Tabs,
   AppShell,
   Navbar,
   Header,
@@ -30,6 +29,7 @@ import {
   useMantineTheme,
   Input,
   TextInput,
+  Tabs,
   Avatar,
   Loader,
 } from "@mantine/core";
@@ -119,125 +119,137 @@ const Channel = () => {
 
   return (
     <>
-      <Grid className="abc">
-        {users ? (
-          users
+      {users
+        ? users
             .filter((f) => f._id === id)
             .map((v) => {
               return (
-                <Grid.Col span={12}>
-                  <Container>
-                    <Group position="apart">
-                      <Group>
-                        <UnstyledButton
-                          component={Link}
-                          to={"/channel/" + v._id}
-                          variant="transparent"
-                        >
-                          <img
-                            src={"http://localhost:1205/" + v.image}
-                            alt="Login Picture"
-                            style={{
-                              width: "100px",
-                              height: "100px",
-                              borderRadius: "50%",
-                            }}
-                          />
-                        </UnstyledButton>
-                        <div style={{ paddingTop: "2px" }}>
-                          <Text size={18} fw={500}>
-                            {v.name}
-                          </Text>
-                          <Text size={12}>{v.subscribers} subscribers</Text>
-                          <Space h="5px" />
-                        </div>
-                      </Group>
-                      {v &&
-                      v.subscribedUsers &&
-                      v.subscribedUsers.includes(cookies.currentUser._id) ? (
-                        <Button
-                          onClick={() => {
-                            handleUnsubscribeUpdate();
+                <>
+                  <Group position="apart">
+                    <Group>
+                      <UnstyledButton
+                        component={Link}
+                        to={"/channel/" + v._id}
+                        variant="transparent"
+                      >
+                        <img
+                          src={"http://localhost:1205/" + v.image}
+                          alt="Login Picture"
+                          style={{
+                            width: "100px",
+                            height: "100px",
+                            borderRadius: "50%",
                           }}
-                        >
-                          Unsubscribe
-                        </Button>
-                      ) : (
-                        <Button
-                          onClick={() => {
-                            handleSubscribeUpdate();
-                          }}
-                        >
-                          Subscribe
-                        </Button>
-                      )}
+                        />
+                      </UnstyledButton>
+                      <div style={{ paddingTop: "2px" }}>
+                        <Text size={18} fw={500}>
+                          {v.name}
+                        </Text>
+                        <Text size={12}>{v.subscribers} subscribers</Text>
+                        <Space h="5px" />
+                      </div>
                     </Group>
-                  </Container>
+                    {v &&
+                    v.subscribedUsers &&
+                    v.subscribedUsers.includes(cookies.currentUser._id) ? (
+                      <Button
+                        onClick={() => {
+                          handleUnsubscribeUpdate();
+                        }}
+                      >
+                        Unsubscribe
+                      </Button>
+                    ) : (
+                      <Button
+                        onClick={() => {
+                          handleSubscribeUpdate();
+                        }}
+                      >
+                        Subscribe
+                      </Button>
+                    )}
+                  </Group>
+
                   <Space h="20px" />
                   <Divider />
                   <Space h="20px" />
-                </Grid.Col>
+                </>
               );
             })
-        ) : (
-          <>def</>
-        )}
-        {videos
-          ? videos
-              .filter((f) => f.user._id === id)
-              .map((v) => {
-                return (
-                  <>
-                    <></>
-                    <Grid.Col span={3} md={6} lg={4} sm={12}>
-                      <Container>
-                        {" "}
-                        <UnstyledButton
-                          component={Link}
-                          to={"/watch/" + v._id}
-                          variant="transparent"
-                        >
-                          <Card style={{ border: 0 }}>
-                            <Card.Section
-                              style={{
-                                marginBottom: "0px",
-                                paddingBottom: "0px",
-                              }}
+        : null}
+
+      <Tabs color="gray" variant="pills" defaultValue="Home">
+        <Tabs.List grow>
+          <Tabs.Tab value="Home">Home</Tabs.Tab>
+          <Tabs.Tab value="messages">Post</Tabs.Tab>
+        </Tabs.List>
+        <Space h="20px" />
+        <Tabs.Panel value="Home">
+          <Grid className="abc">
+            {videos
+              ? videos
+                  .filter((f) => f.user._id === id && f.status === "Publish")
+                  .map((v) => {
+                    return (
+                      <>
+                        <></>
+                        <Grid.Col span={3} md={6} lg={4} sm={12}>
+                          <Container>
+                            {" "}
+                            <UnstyledButton
+                              component={Link}
+                              to={"/watch/" + v._id}
+                              variant="transparent"
                             >
-                              <Image
-                                src={"http://localhost:1205/" + v.thumbnail}
-                                height="200px"
-                                alt="Thumbnail"
-                                style={{
-                                  border: 0,
-                                  borderRadius: "5%",
-                                  position: "relative",
-                                }}
-                              />
-                            </Card.Section>
+                              <Card style={{ border: 0 }}>
+                                <Card.Section
+                                  style={{
+                                    marginBottom: "0px",
+                                    paddingBottom: "0px",
+                                  }}
+                                >
+                                  <Image
+                                    src={"http://localhost:1205/" + v.thumbnail}
+                                    height="200px"
+                                    alt="Thumbnail"
+                                    style={{
+                                      border: 0,
+                                      borderRadius: "5%",
+                                      position: "relative",
+                                    }}
+                                  />
+                                </Card.Section>
 
-                            <Group position="left">
-                              <div
-                                style={{
-                                  paddingTop: "18px",
-                                }}
-                              >
-                                <Title order={4}>{v.title}</Title>
+                                <Group position="left">
+                                  <div
+                                    style={{
+                                      paddingTop: "18px",
+                                    }}
+                                  >
+                                    <Title order={4}>{v.title}</Title>
 
-                                <Text size="sm" color="dimmed">
-                                  {v.views} views . {v.createdAt}
-                                </Text>
-                              </div>
-                            </Group>
-                          </Card>
-                        </UnstyledButton>
-                      </Container>
-                    </Grid.Col>
-                  </>
-                );
-              })
-          : null}
-      </Grid>
+                                    <Text size="sm" color="dimmed">
+                                      {v.views} views . {v.createdAt}
+                                    </Text>
+                                  </div>
+                                </Group>
+                              </Card>
+                            </UnstyledButton>
+                          </Container>
+                        </Grid.Col>
+                      </>
+                    );
+                  })
+              : null}{" "}
+          </Grid>
+        </Tabs.Panel>
+
+        <Tabs.Panel value="messages">
+          <PostAdd />
+        </Tabs.Panel>
+      </Tabs>
+
       {/* {channels
         ? channels.map((m) => {
             <Text>{m.title}</Text>;
@@ -336,8 +348,6 @@ const Channel = () => {
           </Grid.Col>
         </Grid>
       </div> */}
-
-      <PostAdd />
     </>
   );
 };

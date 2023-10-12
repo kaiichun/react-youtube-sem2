@@ -22,3 +22,25 @@ export const fetchComments = async (id) => {
   });
   return response.data;
 };
+
+export const deleteComment = async ({ id = "", token = "" }) => {
+  const response = await axios({
+    method: "DELETE",
+    url: API_URL + "/comments/" + id,
+    headers: {
+      Authorization: "Bearer " + token,
+    },
+  });
+  return response.data;
+};
+
+export const deleteCommentAdmin = async ({ id = "", token = "" }) => {
+  const response = await axios({
+    method: "DELETE",
+    url: API_URL + "/comments/admin/" + id,
+    headers: {
+      Authorization: "Bearer " + token,
+    },
+  });
+  return response.data;
+};

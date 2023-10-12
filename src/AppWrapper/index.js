@@ -87,7 +87,7 @@ const AppWrapper = ({ children }) => {
   const [description, setDescription] = useState("");
   const [thumbnail, setThumbnail] = useState("");
   const [video, setVideo] = useState("");
-  const [status, setStatus] = useState("");
+  const [status, setStatus] = useState("Draft");
 
   const [currentVideo, setCurrentVideo] = useState("");
   const [keywords, setKeywords] = useState("");
@@ -301,7 +301,7 @@ const AppWrapper = ({ children }) => {
                           variant="transparent"
                           size="sm"
                           component={Link}
-                          to="/create-post"
+                          to={"/channel/" + cookies.currentUser._id}
                         >
                           <Group>
                             <IoCreateOutline
@@ -610,7 +610,8 @@ const AppWrapper = ({ children }) => {
                           onClick={() => {
                             // clear the currentUser cookie to logout
                             removeCookies("currentUser");
-                            navigate("/");
+                            navigate("/login");
+                            console.log("User logged out");
                           }}
                         >
                           <Group>

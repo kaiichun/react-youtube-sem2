@@ -30,14 +30,12 @@ import {
   deleteVideo,
   updateVideo,
   fetchPersonalVideo,
+  deleteVideoAdmin,
 } from "../api/video";
 
 const Studio = () => {
   const [cookies] = useCookies(["currentUser"]);
-  const { hovered, ref } = useHover();
   const { currentUser } = cookies;
-  const [status, setStatus] = useState("");
-
   const queryClient = useQueryClient();
   const { isLoading, data: video = [] } = useQuery({
     queryKey: ["vid"],
@@ -45,7 +43,6 @@ const Studio = () => {
   });
 
   const isAdmin = useMemo(() => {
-    console.log(cookies);
     return cookies &&
       cookies.currentUser &&
       cookies.currentUser.role === "admin"
@@ -83,6 +80,19 @@ const Studio = () => {
     },
   });
 
+  const deleteAdminMutation = useMutation({
+    mutationFn: deleteVideoAdmin,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["vid"],
+      });
+      notifications.show({
+        title: "Video is Deleted Successfully",
+        color: "green",
+      });
+    },
+  });
+
   return (
     <>
       <Title>Channel content</Title>
@@ -92,6 +102,7 @@ const Studio = () => {
           <thead>
             <tr>
               <th>Video</th>
+              <th></th>
               <th>Visibility</th>
               <th>Date</th>
               <th>Views</th>
@@ -104,7 +115,7 @@ const Studio = () => {
               video.map((v) => {
                 return (
                   <tr key={v._id}>
-                    <th>
+                    <td width={"500px"}>
                       <Group>
                         {v.thumbnail && v.thumbnail !== "" ? (
                           <>
@@ -157,30 +168,51 @@ const Studio = () => {
                               />
                             </Link>
 
-                            <Link
-                              style={{
-                                textDecoration: "none",
-                                color: "inherit",
-                              }}
-                              onClick={() => {
-                                deleteMutation.mutate({
-                                  id: v._id,
-                                  token: currentUser ? currentUser.token : "",
-                                });
-                              }}
-                            >
-                              <AiOutlineDelete
+                            {cookies.currentUser.role === "user" ? (
+                              <Link
                                 style={{
-                                  width: "20px",
-                                  height: "20px",
+                                  textDecoration: "none",
+                                  color: "inherit",
                                 }}
-                              />
-                            </Link>
+                                onClick={() => {
+                                  deleteMutation.mutate({
+                                    id: v._id,
+                                    token: currentUser ? currentUser.token : "",
+                                  });
+                                }}
+                              >
+                                <AiOutlineDelete
+                                  style={{
+                                    width: "20px",
+                                    height: "20px",
+                                  }}
+                                />
+                              </Link>
+                            ) : cookies.currentUser.role === "admin" ? (
+                              <Link
+                                style={{
+                                  textDecoration: "none",
+                                  color: "inherit",
+                                }}
+                                onClick={() => {
+                                  deleteAdminMutation.mutate({
+                                    id: v._id,
+                                    token: currentUser ? currentUser.token : "",
+                                  });
+                                }}
+                              >
+                                <AiOutlineDelete
+                                  style={{
+                                    width: "20px",
+                                    height: "20px",
+                                  }}
+                                />
+                              </Link>
+                            ) : null}
                           </Group>
                         </div>
                       </Group>
-                    </th>
-
+                    </td>
                     <td>
                       <select
                         className="form-control"

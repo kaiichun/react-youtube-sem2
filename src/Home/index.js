@@ -49,62 +49,64 @@ const Home = () => {
     <>
       <Grid>
         {videos
-          ? videos.map((v) => {
-              return (
-                <Grid.Col span={3} md={6} lg={4} sm={12}>
-                  <UnstyledButton
-                    component={Link}
-                    to={"/watch/" + v._id}
-                    variant="transparent"
-                  >
-                    <Card style={{ border: 0 }}>
-                      <Card.Section
-                        style={{
-                          marginBottom: "0px",
-                          paddingBottom: "0px",
-                        }}
-                      >
-                        <Image
-                          src={"http://localhost:1205/" + v.thumbnail}
-                          height="200px"
-                          alt="Thumbnail"
+          ? videos
+              .filter((v) => v.status === "Publish")
+              .map((v) => {
+                return (
+                  <Grid.Col span={3} md={6} lg={4} sm={12} key={v._id}>
+                    <UnstyledButton
+                      component={Link}
+                      to={"/watch/" + v._id}
+                      variant="transparent"
+                    >
+                      <Card style={{ border: 0 }}>
+                        <Card.Section
                           style={{
-                            border: 0,
-                            borderRadius: "5%",
-                            position: "relative",
-                          }}
-                        />
-                      </Card.Section>
-
-                      <Group position="left">
-                        <img
-                          src={"http://localhost:1205/" + v.user.image}
-                          alt="Profile Picture"
-                          style={{
-                            width: "36px",
-                            height: "36px",
-                            borderRadius: "50%",
-                          }}
-                        />
-                        <div
-                          style={{
-                            paddingTop: "18px",
+                            marginBottom: "0px",
+                            paddingBottom: "0px",
                           }}
                         >
-                          <Title order={4}>{v.title}</Title>
-                          <Text size="sm" color="dimmed">
-                            {v.user.name}
-                          </Text>
-                          <Text size="sm" color="dimmed">
-                            {v.views} views . {v.createdAt}
-                          </Text>
-                        </div>
-                      </Group>
-                    </Card>
-                  </UnstyledButton>
-                </Grid.Col>
-              );
-            })
+                          <Image
+                            src={"http://localhost:1205/" + v.thumbnail}
+                            height="200px"
+                            alt="Thumbnail"
+                            style={{
+                              border: 0,
+                              borderRadius: "5%",
+                              position: "relative",
+                            }}
+                          />
+                        </Card.Section>
+
+                        <Group position="left">
+                          <img
+                            src={"http://localhost:1205/" + v.user.image}
+                            alt="Profile Picture"
+                            style={{
+                              width: "36px",
+                              height: "36px",
+                              borderRadius: "50%",
+                            }}
+                          />
+                          <div
+                            style={{
+                              paddingTop: "18px",
+                            }}
+                          >
+                            <Title order={4}>{v.title}</Title>
+                            <Text size="sm" color="dimmed">
+                              {v.user.name}
+                            </Text>
+                            <Text size="sm" color="dimmed">
+                              {v.views} views . {v.createdAt}
+                            </Text>
+                          </div>
+                        </Group>
+                      </Card>
+                    </UnstyledButton>
+                  </Grid.Col>
+                );
+              })
           : null}
       </Grid>
     </>

@@ -5,6 +5,7 @@ import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
 import { fetcseos, getVideos, addViews } from "../api/video";
 import {
   addVideoComment,
+  deleteComment,
   fetchComments,
   getVideoCommemts,
 } from "../api/comment";
@@ -31,6 +32,8 @@ import {
 } from "@mantine/core";
 import { RiThumbUpLine, RiThumbDownLine } from "react-icons/ri";
 import { PiShareFatLight } from "react-icons/pi";
+import { AiOutlineDelete } from "react-icons/ai";
+import { VscAccount } from "react-icons/vsc";
 import VideoCard from "../Card";
 import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
@@ -88,6 +91,19 @@ export default function Video({ videoSource }) {
     });
     setCommet("");
   };
+
+  const deleteCommentMutation = useMutation({
+    mutationFn: deleteComment,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["comments"],
+      });
+      notifications.show({
+        title: "Video is Deleted Successfully",
+        color: "grenn",
+      });
+    },
+  });
 
   const updateSubscribersMutation = useMutation({
     mutationFn: subscribe,
@@ -191,12 +207,6 @@ export default function Video({ videoSource }) {
     });
   };
 
-  // const TotalLike = () => {
-  //   let total = 0;
-  //   v.user.likes.map((like) => (total = total + parseInt(like.likes)));
-  //   return total;
-  // };
-
   return (
     <Container fluid>
       <Grid>
@@ -244,26 +254,20 @@ export default function Video({ videoSource }) {
                     </div>
                   </>
                 ) : null}
-
-                {vid &&
-                vid.user &&
-                vid.user.subscribedUsers &&
-                vid.user.subscribedUsers.includes(cookies.currentUser._id) ? (
-                  <Button
-                    onClick={() => {
-                      handleUnsubscribeUpdate();
-                    }}
-                  >
-                    Unsubscribe
-                  </Button>
+                {cookies.currentUser ? (
+                  vid && vid.user && vid.user.subscribedUsers ? (
+                    vid.user.subscribedUsers.includes(
+                      cookies.currentUser._id
+                    ) ? (
+                      <Button onClick={handleUnsubscribeUpdate}>
+                        Unsubscribe
+                      </Button>
+                    ) : (
+                      <Button onClick={handleSubscribeUpdate}>Subscribe</Button>
+                    )
+                  ) : null
                 ) : (
-                  <Button
-                    onClick={() => {
-                      handleSubscribeUpdate();
-                    }}
-                  >
-                    Subscribe
-                  </Button>
+                  <Button disabled>Subscribe</Button>
                 )}
               </Group>
               <Group position="right">
@@ -274,7 +278,7 @@ export default function Video({ videoSource }) {
                   onClick={handleLikeUpdate}
                 >
                   <RiThumbUpLine />
-                  {vid.likes.length}
+                  {vid.likes}
                 </Button>
                 <Button
                   variant="transparent"
@@ -340,12 +344,28 @@ export default function Video({ videoSource }) {
               </>
             ) : (
               <>
-                <Group>
+                <Group style={{ paddingLeft: "12px" }}>
+                  <VscAccount size="20px" p="0px" />
                   <TextInput
-                    value=""
-                    placeholder="Enter the description here"
-                    style={{ border: "0px 0px 1px 0 px " }}
+                    placeholder="Add a comment..."
+                    variant="unstyled"
+                    w={680}
+                    radius="md"
+                    value={comment}
+                    onChange={(event) => setCommet(event.target.value)}
                   />
+                  {comment.length > 0 && (
+                    <div>
+                      <Group position="right">
+                        <Button
+                          style={{ margin: "0px" }}
+                          onClick={handleAddNewComment}
+                        >
+                          Comment
+                        </Button>
+                      </Group>
+                    </div>
+                  )}
                 </Group>
               </>
             )}
@@ -358,25 +378,48 @@ export default function Video({ videoSource }) {
                   <Space h={15} />
                   <Divider w="100%" />
                   <Space h={15} />
-                  <Group>
-                    <img
-                      src={"http://localhost:1205/" + com.user.image}
-                      alt="Login Picture"
-                      style={{
-                        width: "38px",
-                        height: "38px",
-                        borderRadius: "50%",
-                      }}
-                    />
-                    <div style={{ paddingTop: "8px", paddingLeft: "0px" }}>
-                      <Text size={14}>
-                        <strong style={{ paddingRight: "10px" }}>
-                          {com.user.name}
-                        </strong>
-                        {com.user.createdAt}
-                      </Text>
-                      <Text size={18}>{com.comments}</Text>
-                    </div>
+                  <Group position="apart">
+                    <Group>
+                      <img
+                        src={"http://localhost:1205/" + com.user.image}
+                        alt="Login Picture"
+                        style={{
+                          width: "38px",
+                          height: "38px",
+                          borderRadius: "50%",
+                        }}
+                      />
+                      <div style={{ paddingTop: "8px", paddingLeft: "0px" }}>
+                        <Text size={14}>
+                          <strong style={{ paddingRight: "10px" }}>
+                            {com.user.name}
+                          </strong>
+                          {com.user.createdAt}
+                        </Text>
+                        <Text size={18}>{com.comments}</Text>
+                      </div>
+                    </Group>
+                    <Group>
+                      <Link
+                        style={{
+                          textDecoration: "none",
+                          color: "inherit",
+                        }}
+                        onClick={() => {
+                          deleteCommentMutation.mutate({
+                            id: com._id,
+                            token: currentUser ? currentUser.token : "",
+                          });
+                        }}
+                      >
+                        <AiOutlineDelete
+                          style={{
+                            width: "20px",
+                            height: "20px",
+                          }}
+                        />
+                      </Link>
+                    </Group>
                   </Group>
                 </Grid.Col>
               ))
