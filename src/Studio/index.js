@@ -304,12 +304,12 @@ const Studio = () => {
                           }
                           data={[
                             {
-                              value: "Draft",
-                              label: "Draft",
-                            },
-                            {
                               value: "Publish",
                               label: "Publish",
+                            },
+                            {
+                              value: "Draft",
+                              label: "Draft",
                             },
                           ]}
                           onChange={(newValue) => {

@@ -330,8 +330,8 @@ export default function Video({ videoSource }) {
               className="mx-auto"
             >
               <Text fz="sm" fw={700}>
-                {vid ? <>{Number(vid.views).toLocaleString()}</> : <>0 (0)</>}
-                views •{" "}
+                {vid ? <>{Number(vid.views).toLocaleString()}</> : <>0</>} views
+                •{" "}
                 {vid.createdAt
                   ? new Date(vid.createdAt).toISOString().split("T")[0]
                   : null}

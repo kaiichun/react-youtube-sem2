@@ -66,16 +66,33 @@ const Home = () => {
                             paddingBottom: "0px",
                           }}
                         >
-                          <Image
-                            src={"http://localhost:1205/" + v.thumbnail}
-                            height="200px"
-                            alt="Thumbnail"
-                            style={{
-                              border: 0,
-                              borderRadius: "5%",
-                              position: "relative",
-                            }}
-                          />
+                          {v.thumbnail && v.thumbnail !== "" ? (
+                            <>
+                              <Image
+                                src={"http://localhost:1205/" + v.thumbnail}
+                                height="200px"
+                                alt="Thumbnail"
+                                style={{
+                                  border: 0,
+                                  borderRadius: "5%",
+                                  position: "relative",
+                                }}
+                              />
+                            </>
+                          ) : (
+                            <Image
+                              src={
+                                "https://media.istockphoto.com/id/1147544806/vector/no-thumbnail-image-vector-graphic.jpg?s=170667a&w=0&k=20&c=-r15fTq303g-Do1h-F1jLdxddwkg4ZTtkdQK1XP2sFk="
+                              }
+                              height="200px"
+                              alt="Thumbnail"
+                              style={{
+                                border: 0,
+                                borderRadius: "5%",
+                                position: "relative",
+                              }}
+                            />
+                          )}
                         </Card.Section>
 
                         <Group position="left">

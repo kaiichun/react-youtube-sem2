@@ -4,7 +4,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { useNavigate, Link } from "react-router-dom";
 import { notifications } from "@mantine/notifications";
-
+import { modals } from "@mantine/modals";
 import {
   Container,
   Grid,
@@ -117,6 +117,17 @@ const Channel = () => {
     });
   };
 
+  const openModal = () =>
+    modals.openConfirmModal({
+      title: "Please confirm your action",
+      children: (
+        <Text size="sm">Sign in to like videos, comment, and subscribe.</Text>
+      ),
+      labels: { confirm: "Confirm", cancel: "Cancel" },
+      onCancel: () => console.log("Cancel"),
+      onConfirm: () => console.log("Confirmed"),
+    });
+
   return (
     <>
       {users
@@ -150,24 +161,22 @@ const Channel = () => {
                         <Space h="5px" />
                       </div>
                     </Group>
-                    {v &&
-                    v.subscribedUsers &&
-                    v.subscribedUsers.includes(cookies.currentUser._id) ? (
-                      <Button
-                        onClick={() => {
-                          handleUnsubscribeUpdate();
-                        }}
-                      >
-                        Unsubscribe
-                      </Button>
+                    {cookies.currentUser ? (
+                      v && v.user && v.user.subscribedUsers ? (
+                        v.user.subscribedUsers.includes(
+                          cookies.currentUser._id
+                        ) ? (
+                          <Button onClick={handleUnsubscribeUpdate}>
+                            Unsubscribe
+                          </Button>
+                        ) : (
+                          <Button onClick={handleSubscribeUpdate}>
+                            Subscribe
+                          </Button>
+                        )
+                      ) : null
                     ) : (
-                      <Button
-                        onClick={() => {
-                          handleSubscribeUpdate();
-                        }}
-                      >
-                        Subscribe
-                      </Button>
+                      <Button onClick={openModal}>Subscribe</Button>
                     )}
                   </Group>
 
@@ -208,16 +217,35 @@ const Channel = () => {
                                   paddingBottom: "0px",
                                 }}
                               >
-                                <Image
-                                  src={"http://localhost:1205/" + v.thumbnail}
-                                  height="200px"
-                                  alt="Thumbnail"
-                                  style={{
-                                    border: 0,
-                                    borderRadius: "5%",
-                                    position: "relative",
-                                  }}
-                                />
+                                {v.thumbnail && v.thumbnail !== "" ? (
+                                  <>
+                                    <Image
+                                      src={
+                                        "http://localhost:1205/" + v.thumbnail
+                                      }
+                                      height="200px"
+                                      alt="Thumbnail"
+                                      style={{
+                                        border: 0,
+                                        borderRadius: "5%",
+                                        position: "relative",
+                                      }}
+                                    />
+                                  </>
+                                ) : (
+                                  <Image
+                                    src={
+                                      "https://media.istockphoto.com/id/1147544806/vector/no-thumbnail-image-vector-graphic.jpg?s=170667a&w=0&k=20&c=-r15fTq303g-Do1h-F1jLdxddwkg4ZTtkdQK1XP2sFk="
+                                    }
+                                    height="200px"
+                                    alt="Thumbnail"
+                                    style={{
+                                      border: 0,
+                                      borderRadius: "5%",
+                                      position: "relative",
+                                    }}
+                                  />
+                                )}
                               </Card.Section>
 
                               <Group position="left">
