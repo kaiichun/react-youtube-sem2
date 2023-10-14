@@ -70,10 +70,8 @@ export default function SideBar() {
               Home
             </div>
           </Link>
-          <Link
-            to="/subscriptions"
-            style={{ textDecoration: "none", color: "inherit" }}
-          >
+
+          <Link style={{ textDecoration: "none", color: "inherit" }}>
             <div className="item">
               <MdOutlineSubscriptions className="Menu-Icon" />
               Subscriptions
@@ -82,19 +80,13 @@ export default function SideBar() {
 
           <Divider mt="6px" mb="6px" />
 
-          <Link
-            to="/library"
-            style={{ textDecoration: "none", color: "inherit" }}
-          >
+          <Link style={{ textDecoration: "none", color: "inherit" }}>
             <div className="item">
               <MdOutlineVideoLibrary className="Menu-Icon" />
               Library
             </div>
           </Link>
-          <Link
-            to="/history"
-            style={{ textDecoration: "none", color: "inherit" }}
-          >
+          <Link style={{ textDecoration: "none", color: "inherit" }}>
             <div className="item">
               <GoHistory className="Menu-Icon" />
               History
@@ -102,116 +94,134 @@ export default function SideBar() {
           </Link>
 
           <Divider mt="6px" mb="6px" />
-          <Grid>
-            <Title
-              order={6}
-              style={{ paddingLeft: "14px", paddingTop: "12px" }}
-            >
-              Subscriptions
-            </Title>
-            {cookies && cookies.currentUser ? (
-              <>
-                <Grid.Col span={12}>
-                  <Link
-                    to="/:id"
-                    style={{ textDecoration: "none", color: "inherit" }}
-                  >
-                    <div className="item">
-                      <img
-                        src={
-                          "http://localhost:1205/" + cookies.currentUser.image
-                        }
-                        alt="Login Picture"
-                        className="Channel-Icon"
-                        style={{
-                          paddingTop: "2px",
-                          width: "26px",
-                          height: "26px",
-                          borderRadius: "50%",
-                        }}
-                      />
-                      {cookies.currentUser.name}
-                    </div>
-                  </Link>
-                  <div className="item">
-                    <BiChevronDown className="Menu-Icon" />
-                    Show More
-                  </div>
-                </Grid.Col>
-              </>
-            ) : (
-              <>
-                <div className="login" style={{ paddingLeft: "12px" }}>
-                  <p>
-                    Sign in to like videos,
-                    <br /> comment, and subscribe.{" "}
-                  </p>
-                  <Button
-                    component={Link}
-                    to="/login"
-                    variant="outline"
-                    radius="xl"
-                    size="sm"
-                    leftIcon={<VscAccount size="20px" p="0px" />}
+
+          <Title order={6} style={{ paddingLeft: "12px" }}>
+            Subscriptions
+          </Title>
+          {cookies && cookies.currentUser ? (
+            <>
+              <Link style={{ textDecoration: "none", color: "inherit" }}>
+                <div className="item">
+                  <img
+                    src={"http://localhost:1205/" + cookies.currentUser.image}
+                    alt="Login Picture"
+                    className="Channel-Icon"
                     style={{
-                      fontStyle: "bolder",
-                      padding: "10px 10px",
-                      fontWeight: "700",
-                      width: "100px",
-                      backgroundColor: "transparent",
-                      border: "1px solid #E9ECEF",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "1px",
+                      paddingTop: "2px",
+                      width: "26px",
+                      height: "26px",
+                      borderRadius: "50%",
                     }}
-                  >
-                    Sign in
-                  </Button>
+                  />
+                  {cookies.currentUser.name}
                 </div>
-              </>
-            )}
-          </Grid>
+
+                {cookies.currentUser.subscribedUsers &&
+                cookies.currentUser.subscribedUsers.length > 0 ? (
+                  <div className="subscribed-users">
+                    {cookies.currentUser.subscribedUsers
+                      .slice(0, 6)
+                      .map((user, index) => (
+                        <div key={index} className="subscribed-user">
+                          <Link
+                            to={"/channel/" + user._id}
+                            style={{
+                              textDecoration: "none",
+                              color: "inherit",
+                            }}
+                          >
+                            <div className="item">
+                              <img
+                                src={"http://localhost:1205/" + user.image}
+                                alt="Login Picture"
+                                className="Channel-Icon"
+                                style={{
+                                  paddingTop: "2px",
+                                  width: "26px",
+                                  height: "26px",
+                                  borderRadius: "50%",
+                                }}
+                              />
+                              {user.name}
+                            </div>
+                          </Link>
+                        </div>
+                      ))}
+                    {cookies.currentUser.subscribedUsers.length > 6 ? (
+                      <div className="show-more-button">
+                        <button>Show More</button>
+                      </div>
+                    ) : null}
+                  </div>
+                ) : null}
+              </Link>
+              <div className="item">
+                <BiChevronDown className="Menu-Icon" />
+                Show More
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="login" style={{ paddingLeft: "12px" }}>
+                <p>
+                  Sign in to like videos,
+                  <br /> comment, and subscribe.{" "}
+                </p>
+                <Button
+                  component={Link}
+                  to="/login"
+                  variant="outline"
+                  radius="xl"
+                  size="sm"
+                  leftIcon={<VscAccount size="20px" p="0px" />}
+                  style={{
+                    fontStyle: "bolder",
+                    padding: "10px 10px",
+
+                    fontWeight: "700",
+                    width: "100px",
+                    backgroundColor: "transparent",
+                    border: "1px solid #E9ECEF",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "1px",
+                  }}
+                >
+                  Sign in
+                </Button>
+              </div>
+            </>
+          )}
+
           <Divider mt="8px" mb="10px" />
           <Title className="title" order={6} style={{ paddingLeft: "12px" }}>
             Explore
           </Title>
-          <Link
-            to="/trending"
-            style={{ textDecoration: "none", color: "inherit" }}
-          >
+          <Link style={{ textDecoration: "none", color: "inherit" }}>
             <div className="item">
               <MdOutlineLocalFireDepartment className="Menu-Icon" />
               Trending
             </div>
           </Link>
-          <Link
-            to="/music"
-            style={{ textDecoration: "none", color: "inherit" }}
-          >
+          <Link style={{ textDecoration: "none", color: "inherit" }}>
             <div className="item">
               <IoMusicalNoteOutline className="Menu-Icon" />
               Music
             </div>
           </Link>
-          <Link
-            to="/sports"
-            style={{ textDecoration: "none", color: "inherit" }}
-          >
+          <Link style={{ textDecoration: "none", color: "inherit" }}>
             <div className="item">
               <GoTrophy className="Menu-Icon" />
               Sports
             </div>
           </Link>
-          <Link
-            to="/gamming"
-            style={{ textDecoration: "none", color: "inherit" }}
-          >
+          <Link style={{ textDecoration: "none", color: "inherit" }}>
             <div className="item">
               <SiYoutubegaming className="Menu-Icon" />
               Gaming
             </div>
           </Link>
-          <Link to="/news" style={{ textDecoration: "none", color: "inherit" }}>
+          <Link style={{ textDecoration: "none", color: "inherit" }}>
             <div className="item">
               <ImNewspaper className="Menu-Icon" />
               News
@@ -234,7 +244,7 @@ export default function SideBar() {
           </div>
           <div className="item">
             <Link
-              to="/premium"
+              to="https://www.youtube.com/premium"
               style={{ textDecoration: "none", color: "inherit" }}
             >
               <div className="logo">

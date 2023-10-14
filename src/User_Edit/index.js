@@ -130,9 +130,13 @@ const UserEdit = () => {
             <Group position="center">
               {image && image !== "" ? (
                 <>
-                  <Image
+                  <img
                     src={"http://localhost:1205/" + image}
-                    style={{ borderRadius: "50%", width: "130px" }}
+                    style={{
+                      borderRadius: "50%",
+                      width: "100px",
+                      height: "100px",
+                    }}
                   />
                   <Button color="dark" mt="15px" onClick={() => setImage("")}>
                     Remove Image

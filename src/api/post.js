@@ -12,6 +12,11 @@ export const fetchPosts = async () => {
   return response.data;
 };
 
+export const getPosts = async (id) => {
+  const response = await axios.get(API_URL + "/posts/" + id);
+  return response.data;
+};
+
 export const addPostDetails = async ({ data, token = "" }) => {
   const response = await axios({
     method: "POST",
@@ -49,6 +54,19 @@ export const uploadPostImage = async (file) => {
       "Content-Type": "multipart/form-data",
     },
     data: formData,
+  });
+  return response.data;
+};
+
+export const updatePost = async ({ id, data, token = "" }) => {
+  const response = await axios({
+    method: "PUT",
+    url: API_URL + "/posts/" + id,
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + token,
+    },
+    data: data,
   });
   return response.data;
 };

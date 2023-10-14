@@ -1,11 +1,13 @@
 // App.js
-import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
+import "../App.css";
 import { notifications } from "@mantine/notifications";
 import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
+
 import { fetcseos, getVideos, addViews } from "../api/video";
 import {
   addVideoComment,
   deleteComment,
+  deleteCommentAdmin,
   fetchComments,
   getVideoCommemts,
 } from "../api/comment";
@@ -34,8 +36,7 @@ import { RiThumbUpLine, RiThumbDownLine } from "react-icons/ri";
 import { PiShareFatLight } from "react-icons/pi";
 import { AiOutlineDelete } from "react-icons/ai";
 import { VscAccount } from "react-icons/vsc";
-import VideoCard from "../Card";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useRef, useState, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { subscribe, unSubscribe, likeVideo, unlikeVideo } from "../api/auth";
 
@@ -105,6 +106,19 @@ export default function Video({ videoSource }) {
     },
   });
 
+  const deleteCommentAdminMutation = useMutation({
+    mutationFn: deleteCommentAdmin,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["comments"],
+      });
+      notifications.show({
+        title: "Admin is Deleted the comment Successfully",
+        color: "grenn",
+      });
+    },
+  });
+
   const updateSubscribersMutation = useMutation({
     mutationFn: subscribe,
     onSuccess: () => {
@@ -144,7 +158,6 @@ export default function Video({ videoSource }) {
       });
     },
     onError: (error) => {
-      console.log(error);
       notifications.show({
         title: error.response.data.message,
         color: "red",
@@ -207,13 +220,22 @@ export default function Video({ videoSource }) {
     });
   };
 
+  const isAdmin = useMemo(() => {
+    console.log(cookies);
+    return cookies &&
+      cookies.currentUser &&
+      cookies.currentUser.role === "admin"
+      ? true
+      : false;
+  }, [cookies]);
+
   return (
     <Container fluid>
       <Grid>
-        <Grid.Col span={12}>
+        <Grid.Col>
           <div>
             <Group>
-              <video ref={videoRef} controls width="100%" height="600">
+              <video ref={videoRef} controls className="video-player">
                 <source
                   src={"http://localhost:1205/" + vid.video}
                   type="video/mp4"
@@ -267,7 +289,7 @@ export default function Video({ videoSource }) {
                     )
                   ) : null
                 ) : (
-                  <Button disabled>Subscribe</Button>
+                  <Button>Subscribe</Button>
                 )}
               </Group>
               <Group position="right">
@@ -278,7 +300,15 @@ export default function Video({ videoSource }) {
                   onClick={handleLikeUpdate}
                 >
                   <RiThumbUpLine />
-                  {vid.likes}
+                  {vid.user ? (
+                    <>
+                      {vid.likes.length >= 1000
+                        ? vid.likes.length.toLocaleString()
+                        : vid.likes.length}
+                    </>
+                  ) : (
+                    0
+                  )}
                 </Button>
                 <Button
                   variant="transparent"
@@ -294,9 +324,17 @@ export default function Video({ videoSource }) {
               </Group>
             </Group>
             <Space h="20px" />
-            <Card style={{ backgroundColor: "#F1F3F5" }} radius="md">
+            <Card
+              style={{ backgroundColor: "#F1F3F5" }}
+              radius="md"
+              className="mx-auto"
+            >
               <Text fz="sm" fw={700}>
-                {vid.views} views • {vid.createdAt}
+                {vid ? <>{Number(vid.views).toLocaleString()}</> : <>0 (0)</>}
+                views •{" "}
+                {vid.createdAt
+                  ? new Date(vid.createdAt).toISOString().split("T")[0]
+                  : null}
               </Text>
               <Space h="5px" />
               <Text fz="sm">{vid.description}</Text>
@@ -394,32 +432,55 @@ export default function Video({ videoSource }) {
                           <strong style={{ paddingRight: "10px" }}>
                             {com.user.name}
                           </strong>
-                          {com.user.createdAt}
+                          {com.user.createdAt
+                            ? new Date(com.user.createdAt)
+                                .toISOString()
+                                .split("T")[0]
+                            : null}
                         </Text>
                         <Text size={18}>{com.comments}</Text>
                       </div>
                     </Group>
-                    <Group>
-                      <Link
-                        style={{
-                          textDecoration: "none",
-                          color: "inherit",
-                        }}
-                        onClick={() => {
-                          deleteCommentMutation.mutate({
-                            id: com._id,
-                            token: currentUser ? currentUser.token : "",
-                          });
-                        }}
-                      >
-                        <AiOutlineDelete
+                    {cookies &&
+                    cookies.currentUser &&
+                    cookies.currentUser._id === com.user._id ? (
+                      <Group>
+                        <Link
                           style={{
-                            width: "20px",
-                            height: "20px",
+                            textDecoration: "none",
+                            color: "inherit",
                           }}
-                        />
-                      </Link>
-                    </Group>
+                          onClick={() => {
+                            deleteCommentMutation.mutate({
+                              id: com._id,
+                              token: currentUser ? currentUser.token : "",
+                            });
+                          }}
+                        >
+                          <AiOutlineDelete
+                            style={{
+                              width: "20px",
+                              height: "20px",
+                            }}
+                          />
+                        </Link>
+                      </Group>
+                    ) : (
+                      isAdmin && (
+                        <Button
+                          variant="outline"
+                          color="red"
+                          onClick={() => {
+                            deleteCommentAdminMutation.mutate({
+                              id: com._id,
+                              token: currentUser ? currentUser.token : "",
+                            });
+                          }}
+                        >
+                          Delete
+                        </Button>
+                      )
+                    )}
                   </Group>
                 </Grid.Col>
               ))

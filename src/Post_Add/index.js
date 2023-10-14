@@ -1,8 +1,9 @@
 import { Dropzone, IMAGE_MIME_TYPE, MIME_TYPES } from "@mantine/dropzone";
-import React, { useEffect, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { LiaPhotoVideoSolid } from "react-icons/lia";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { BiEdit } from "react-icons/bi";
+import { RiThumbUpLine, RiThumbDownLine } from "react-icons/ri";
 
 import {
   Container,
@@ -54,7 +55,9 @@ import {
   deletePostAdmin,
   fetchPosts,
   uploadPostImage,
+  updatePost,
 } from "../api/post";
+import { likePost, unlikePost } from "../api/auth";
 
 export default function PostAdd() {
   const navigate = useNavigate();
@@ -104,6 +107,34 @@ export default function PostAdd() {
     setPostimage("");
   };
 
+  const updateMutation = useMutation({
+    mutationFn: updatePost,
+    onSuccess: () => {
+      notifications.show({
+        title: "Post Edited",
+        color: "green",
+      });
+      navigate("/");
+    },
+    onError: (error) => {
+      notifications.show({
+        title: error.response.data.message,
+        color: "red",
+      });
+    },
+  });
+
+  const handleUpdatePosts = async (event) => {
+    event.preventDefault();
+    updateMutation.mutate({
+      id: id,
+      data: JSON.stringify({
+        content: content,
+      }),
+      token: currentUser ? currentUser.token : "",
+    });
+  };
+
   const uploadPostImageMutation = useMutation({
     mutationFn: uploadPostImage,
     onSuccess: (data) => {
@@ -151,6 +182,15 @@ export default function PostAdd() {
       });
     },
   });
+
+  const isAdmin = useMemo(() => {
+    return cookies &&
+      cookies.currentUser &&
+      cookies.currentUser.role === "admin"
+      ? true
+      : false;
+  }, [cookies]);
+
   return (
     <>
       {cookies && cookies.currentUser && cookies.currentUser._id === id ? (
@@ -188,24 +228,20 @@ export default function PostAdd() {
 
               <Space h="40px" />
               {postimage && postimage !== "" ? (
-                <Group position="center">
+                <Group>
                   <div>
-                    <img
+                    <Image
                       src={"http://localhost:1205/" + postimage}
-                      height="300px"
-                      position="absolute"
+                      width="100%"
+                      height="220px"
                     />
                     <Button
                       color="dark"
                       mt="15px"
+                      mb="15px"
                       onClick={() => setPostimage("")}
-                      style={{
-                        bottom: "120px",
-                        right: " 60px",
-                        opacity: "0.2",
-                      }}
                     >
-                      X
+                      Remove
                     </Button>
                   </div>
                 </Group>
@@ -271,17 +307,58 @@ export default function PostAdd() {
                       {v.createdAt}
                     </Text>
                     <Group position="right">
+                      {isAdmin && (
+                        <>
+                          {cookies &&
+                            cookies.currentUser &&
+                            cookies.currentUser._id === id &&
+                            cookies.currentUser.role === "admin" && (
+                              <>
+                                <UnstyledButton
+                                  component={Link}
+                                  to={"/post_edit/" + v._id}
+                                >
+                                  <BiEdit
+                                    style={{ width: "20px", height: "20px" }}
+                                  />
+                                </UnstyledButton>
+                              </>
+                            )}
+
+                          <Link
+                            style={{
+                              textDecoration: "none",
+                              color: "inherit",
+                            }}
+                            onClick={() => {
+                              deleteAdminPostMutation.mutate({
+                                id: v._id,
+                                token: currentUser?.token || "",
+                              });
+                            }}
+                          >
+                            <RiDeleteBin6Line
+                              style={{
+                                width: "24px",
+                                height: "24px",
+                                paddingTop: "4px",
+                              }}
+                            />
+                          </Link>
+                        </>
+                      )}
+
                       {cookies &&
-                      cookies.currentUser &&
-                      cookies.currentUser._id === id ? (
-                        cookies.currentUser.role === "user" ? (
+                        cookies.currentUser &&
+                        cookies.currentUser._id === id &&
+                        cookies.currentUser.role === "user" && (
                           <>
-                            <UnstyledButton onClick={open}>
+                            <UnstyledButton
+                              component={Link}
+                              to={"/post_edit/" + v._id}
+                            >
                               <BiEdit
-                                style={{
-                                  width: "20px",
-                                  height: "20px",
-                                }}
+                                style={{ width: "20px", height: "20px" }}
                               />
                             </UnstyledButton>
                             <Link
@@ -300,157 +377,12 @@ export default function PostAdd() {
                                 style={{
                                   width: "24px",
                                   height: "24px",
-                                  paddingTop: "6px",
+                                  paddingTop: "4px",
                                 }}
                               />
                             </Link>
-                            <Modal
-                              opened={opened}
-                              onClose={close}
-                              title="Edit Post"
-                              centered
-                            >
-                              {cookies &&
-                              cookies.currentUser &&
-                              cookies.currentUser._id === id ? (
-                                <Group position="center">
-                                  <Card
-                                    radius="md"
-                                    withBorder
-                                    style={{ width: "700px" }}
-                                  >
-                                    <div style={{ width: "700px" }}>
-                                      <Group>
-                                        <img
-                                          src={
-                                            "http://localhost:1205/" +
-                                            cookies.currentUser.image
-                                          }
-                                          alt="Login Picture"
-                                          style={{
-                                            width: "36px",
-                                            height: "36px",
-                                            borderRadius: "50%",
-                                          }}
-                                        />
-                                        <Text
-                                          size={18}
-                                          style={{ paddingBottom: "8px" }}
-                                        >
-                                          {cookies.currentUser.name}
-                                        </Text>
-                                      </Group>
-
-                                      <Space h="10px" />
-                                      <div>
-                                        <Textarea
-                                          variant="unstyled"
-                                          placeholder="Post an update to your fans"
-                                          radius="xs"
-                                          w={550}
-                                          minRows={2}
-                                          maxRows={4}
-                                          value={content}
-                                          onChange={(event) =>
-                                            setContent(event.target.value)
-                                          }
-                                        />
-                                      </div>
-
-                                      <Space h="40px" />
-                                      {postimage && postimage !== "" ? (
-                                        <Group position="center">
-                                          <div>
-                                            <img
-                                              src={
-                                                "http://localhost:1205/" +
-                                                postimage
-                                              }
-                                              height="300px"
-                                              position="absolute"
-                                            />
-                                            <Button
-                                              color="dark"
-                                              mt="15px"
-                                              onClick={() => setPostimage("")}
-                                              style={{
-                                                bottom: "120px",
-                                                right: " 60px",
-                                                opacity: "0.2",
-                                              }}
-                                            >
-                                              X
-                                            </Button>
-                                          </div>
-                                        </Group>
-                                      ) : (
-                                        <Dropzone
-                                          multiple={false}
-                                          accept={IMAGE_MIME_TYPE}
-                                          w={80}
-                                          h={60}
-                                          styles={{ margin: "0px" }}
-                                          onDrop={(files) => {
-                                            handlePostImageUpload(files);
-                                          }}
-                                        >
-                                          <Group position="center">
-                                            <Text
-                                              align="center"
-                                              style={{ padding: "0px" }}
-                                            >
-                                              Image
-                                            </Text>
-                                          </Group>
-                                        </Dropzone>
-                                      )}
-                                    </div>
-                                    <Space h="10px" />
-                                    <Group position="right">
-                                      <Button
-                                        style={{ margin: "0px" }}
-                                        onClick={handleAddNewPost}
-                                      >
-                                        Publish
-                                      </Button>
-                                    </Group>
-                                  </Card>
-                                </Group>
-                              ) : null}
-                            </Modal>
                           </>
-                        ) : cookies.currentUser.role === "admin" ? (
-                          <>
-                            <BiEdit
-                              style={{
-                                width: "20px",
-                                height: "20px",
-                              }}
-                            />
-                            <Link
-                              style={{
-                                textDecoration: "none",
-                                color: "inherit",
-                              }}
-                              onClick={() => {
-                                deleteAdminPostMutation.mutate({
-                                  id: v._id,
-                                  token: currentUser ? currentUser.token : "",
-                                });
-                              }}
-                            >
-                              <RiDeleteBin6Line
-                                style={{
-                                  width: "24px",
-                                  height: "24px",
-                                  paddingTop: "6px",
-                                }}
-                              />
-                              x``
-                            </Link>
-                          </>
-                        ) : null
-                      ) : null}
+                        )}
                     </Group>
                   </Card>
                 </Group>

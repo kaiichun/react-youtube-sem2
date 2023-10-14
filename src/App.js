@@ -13,6 +13,8 @@ import VideoEdit from "./VideoEdit";
 import Trending from "./Trending";
 import UserEdit from "./User_Edit";
 import Channel from "./Channel";
+import PostEdit from "./Post_Edit";
+
 const App = () => {
   return (
     <Router>
@@ -73,6 +75,15 @@ const App = () => {
           element={
             <AppWrapper>
               <VideoEdit />
+            </AppWrapper>
+          }
+        />
+
+        <Route
+          path="/post_edit/:id"
+          element={
+            <AppWrapper>
+              <PostEdit />
             </AppWrapper>
           }
         />

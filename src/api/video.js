@@ -8,7 +8,6 @@ export const fetchVideos = async (keyword = "") => {
     method: "GET",
     url: API_URL + "/videos?" + (keyword !== "" ? "keyword=" + keyword : ""),
   });
-  console.log(response.data);
   return response.data;
 };
 

@@ -53,7 +53,7 @@ const Home = () => {
               .filter((v) => v.status === "Publish")
               .map((v) => {
                 return (
-                  <Grid.Col span={3} md={6} lg={4} sm={12} key={v._id}>
+                  <Grid.Col md={6} lg={4} sm={12} key={v._id}>
                     <UnstyledButton
                       component={Link}
                       to={"/watch/" + v._id}
@@ -98,7 +98,15 @@ const Home = () => {
                               {v.user.name}
                             </Text>
                             <Text size="sm" color="dimmed">
-                              {v.views} views . {v.createdAt}
+                              {v ? (
+                                <>{Number(v.views).toLocaleString()} views </>
+                              ) : null}
+                              .{" "}
+                              {v.createdAt
+                                ? new Date(v.createdAt)
+                                    .toISOString()
+                                    .split("T")[0]
+                                : null}
                             </Text>
                           </div>
                         </Group>

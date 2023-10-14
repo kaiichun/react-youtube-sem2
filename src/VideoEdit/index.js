@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import React, { useRef, useState, useMemo } from "react";
+
 import axios from "axios";
 import {
   Container,
@@ -25,6 +26,7 @@ function VideoEdit() {
   const { currentUser } = cookies;
   const { id } = useParams();
   const navigate = useNavigate();
+  const videoRef = useRef(null);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [thumbnail, setThumbnail] = useState("");
@@ -107,12 +109,20 @@ function VideoEdit() {
       <Space h="50px" />
       <Card withBorder shadow="md" p="20px">
         <LoadingOverlay visible={isLoading} />
+        <video ref={videoRef} controls className="video-player">
+          <source
+            src={"http://localhost:1205/" + video}
+            type="video/mp4"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+          />
+        </video>
         <TextInput
           value={title}
           placeholder="Enter the product name here"
           label="Name"
           description="The name of the product"
-          withAsterisk
           onChange={(event) => setTitle(event.target.value)}
         />
         <Space h="20px" />
@@ -121,15 +131,15 @@ function VideoEdit() {
           placeholder="Enter the product name here"
           label="Description"
           description="The name of the product"
-          withAsterisk
           onChange={(event) => setDescription(event.target.value)}
         />
         <Space h="20px" />
+        <span>Thumbnail</span>
         {thumbnail && thumbnail !== "" ? (
           <>
             <Image
               src={"http://localhost:1205/" + thumbnail}
-              width="50vw"
+              width="100%"
               height="50vh"
             />
             <Button color="dark" mt="15px" onClick={() => setThumbnail("")}>
@@ -164,7 +174,7 @@ function VideoEdit() {
           size="xs"
           color="gray"
         >
-          Go back to Home
+          Back to Studio
         </Button>
       </Group>
       <Space h="100px" />

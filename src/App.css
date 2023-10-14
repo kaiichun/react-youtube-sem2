@@ -64,3 +64,8 @@
   border: 1px solid #ccc;
   border-radius: 3px;
 }
+
+.video-player {
+  width: 100%;
+  aspect-ratio: 16/9;
+}

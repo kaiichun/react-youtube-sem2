@@ -5,6 +5,7 @@ import {
   Table,
   Group,
   Button,
+  UnstyledButton,
   Image,
   Space,
   TextInput,
@@ -32,6 +33,7 @@ import {
   fetchPersonalVideo,
   deleteVideoAdmin,
 } from "../api/video";
+import { deleteUser } from "../api/auth";
 
 const Studio = () => {
   const [cookies] = useCookies(["currentUser"]);
@@ -53,6 +55,9 @@ const Studio = () => {
   const updateMutation = useMutation({
     mutationFn: updateVideo,
     onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["vid"],
+      });
       notifications.show({
         title: "Video is updated successfully",
         color: "green",
@@ -93,20 +98,33 @@ const Studio = () => {
     },
   });
 
+  const deleteUserMutation = useMutation({
+    mutationFn: deleteUser,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["vid"],
+      });
+      notifications.show({
+        title: "is Deleted Successfully",
+        color: "green",
+      });
+    },
+  });
+
   return (
     <>
       <Title>Channel content</Title>
       <Space h={30} />
-      <ScrollArea w={1200} h="auto">
-        <table width={1300}>
+      <ScrollArea style={{ width: "100%", overflowX: "auto" }}>
+        <table width={1450}>
           <thead>
             <tr>
+              {isAdmin && <th>Users</th>}
+
               <th>Video</th>
-              <th></th>
               <th>Visibility</th>
               <th>Date</th>
               <th>Views</th>
-              <th>Comment</th>
               <th>Likes (vs. dislikes)</th>
             </tr>
           </thead>
@@ -115,22 +133,59 @@ const Studio = () => {
               video.map((v) => {
                 return (
                   <tr key={v._id}>
+                    {isAdmin && (
+                      <td width={"250px"}>
+                        <Group>
+                          <UnstyledButton
+                            component={Link}
+                            to={"/channel/" + v.user._id}
+                            variant="transparent"
+                          >
+                            <img
+                              src={"http://localhost:1205/" + v.user.image}
+                              alt="Login Picture"
+                              style={{
+                                width: "50px",
+                                height: "50px",
+                                borderRadius: "50%",
+                              }}
+                            />
+                          </UnstyledButton>
+                          <div>
+                            {v.user.name}
+                            <br />
+                            <small>
+                              {v ? (
+                                <>
+                                  {Number(v.user.subscribers).toLocaleString()}
+                                </>
+                              ) : (
+                                <>0 (0)</>
+                              )}{" "}
+                              subscribers{" "}
+                            </small>
+                          </div>
+                        </Group>
+                      </td>
+                    )}
+
                     <td width={"500px"}>
-                      <Group>
+                      <Group position="left">
                         {v.thumbnail && v.thumbnail !== "" ? (
                           <>
                             <Image
                               src={"http://localhost:1205/" + v.thumbnail}
-                              width="120px"
-                              height="68px"
+                              width="140px"
+                              height="78px"
                             />
                           </>
                         ) : (
                           <Image
                             src={
-                              "https://www.aachifoods.com/templates/default-new/images/no-prd.jpg"
+                              "https://media.istockphoto.com/id/1147544806/vector/no-thumbnail-image-vector-graphic.jpg?s=170667a&w=0&k=20&c=-r15fTq303g-Do1h-F1jLdxddwkg4ZTtkdQK1XP2sFk="
                             }
-                            width="50px"
+                            width="140px"
+                            height="78px"
                           />
                         )}
 
@@ -138,8 +193,18 @@ const Studio = () => {
                           <Text fw={700}>{v.title}</Text>
                           <Space h="10px" />
                           <Group>
-                            <Link
+                            <Button
+                              variant="transparent"
+                              color="gray"
+                              size="xs"
+                              radius="md"
+                              component={Link}
                               to={"/video_edit/" + v._id}
+                              disabled={
+                                cookies &&
+                                cookies.currentUser &&
+                                cookies.currentUser._id !== v.user._id
+                              }
                               style={{
                                 textDecoration: "none",
                                 color: "inherit",
@@ -147,13 +212,18 @@ const Studio = () => {
                             >
                               <SlPencil
                                 style={{
-                                  width: "17px",
-                                  height: "20px",
+                                  width: "16px",
+                                  height: "18px",
                                 }}
                               />
-                            </Link>
+                            </Button>
 
-                            <Link
+                            <Button
+                              variant="transparent"
+                              color="gray"
+                              size="xs"
+                              radius="md"
+                              component={Link}
                               to={"/watch/" + v._id}
                               style={{
                                 textDecoration: "none",
@@ -166,10 +236,15 @@ const Studio = () => {
                                   height: "20px",
                                 }}
                               />
-                            </Link>
+                            </Button>
 
                             {cookies.currentUser.role === "user" ? (
-                              <Link
+                              <Button
+                                variant="transparent"
+                                color="gray"
+                                size="xs"
+                                radius="md"
+                                component={Link}
                                 style={{
                                   textDecoration: "none",
                                   color: "inherit",
@@ -183,13 +258,18 @@ const Studio = () => {
                               >
                                 <AiOutlineDelete
                                   style={{
-                                    width: "20px",
-                                    height: "20px",
+                                    width: "18px",
+                                    height: "18px",
                                   }}
                                 />
-                              </Link>
+                              </Button>
                             ) : cookies.currentUser.role === "admin" ? (
-                              <Link
+                              <Button
+                                variant="transparent"
+                                color="gray"
+                                size="xs"
+                                radius="md"
+                                component={Link}
                                 style={{
                                   textDecoration: "none",
                                   color: "inherit",
@@ -203,47 +283,78 @@ const Studio = () => {
                               >
                                 <AiOutlineDelete
                                   style={{
-                                    width: "20px",
-                                    height: "20px",
+                                    width: "18px",
+                                    height: "18px",
                                   }}
                                 />
-                              </Link>
+                              </Button>
                             ) : null}
                           </Group>
                         </div>
                       </Group>
                     </td>
-                    <td>
-                      <select
-                        className="form-control"
-                        id="user-role"
-                        value={v.status}
-                        onChange={(newValue) => {
-                          updateMutation.mutate({
-                            id: v._id,
-                            data: JSON.stringify({
-                              status: newValue,
-                            }),
-                            token: currentUser ? currentUser.token : "",
-                          });
-                        }}
-                      >
-                        <option value="Draft">Draft</option>
-                        <option value="Publish">Publish</option>
-                      </select>
+                    <td width={"120px"}>
+                      <Group position="center">
+                        <Select
+                          value={v.status}
+                          disabled={
+                            cookies &&
+                            cookies.currentUser &&
+                            cookies.currentUser._id !== v.user._id
+                          }
+                          data={[
+                            {
+                              value: "Draft",
+                              label: "Draft",
+                            },
+                            {
+                              value: "Publish",
+                              label: "Publish",
+                            },
+                          ]}
+                          onChange={(newValue) => {
+                            updateMutation.mutate({
+                              id: v._id,
+                              data: JSON.stringify({
+                                status: newValue,
+                              }),
+                              token: currentUser ? currentUser.token : "",
+                            });
+                          }}
+                        />
+                      </Group>
                     </td>
-                    <td>
-                      <div>{v.createdAt}</div>
-                    </td>
-                    <td>
-                      <div>{v.views}</div>
-                    </td>
-                    <td>
-                      <div>{v.comment}asd</div>
-                    </td>
-                    <td>
+                    <td width={"100px"}>
                       <div>
-                        {v.likes.length} ({v.unlikes.length})
+                        <Group position="center">
+                          {v.createdAt
+                            ? new Date(v.createdAt).toISOString().split("T")[0]
+                            : null}
+                        </Group>
+                      </div>
+                    </td>
+                    <td width={"100px"}>
+                      <div>
+                        <Group position="center">
+                          {v ? (
+                            <>{Number(v.views).toLocaleString()}</>
+                          ) : (
+                            <>0 (0)</>
+                          )}
+                        </Group>
+                      </div>
+                    </td>
+                    <td width={"130px"}>
+                      <div>
+                        <Group position="center">
+                          {v ? (
+                            <>
+                              {v.likes.length} ({v.unlikes.length})
+                            </>
+                          ) : (
+                            <>0 (0)</>
+                          )}
+                        </Group>
                       </div>
                     </td>
                   </tr>
