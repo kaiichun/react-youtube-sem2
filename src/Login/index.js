@@ -1,3 +1,8 @@
+import { useState } from "react";
+import { useCookies } from "react-cookie";
+import { Link, useNavigate } from "react-router-dom";
+import { useMutation } from "@tanstack/react-query";
+import { notifications } from "@mantine/notifications";
 import {
   PasswordInput,
   TextInput,
@@ -10,12 +15,7 @@ import {
   Card,
   Avatar,
 } from "@mantine/core";
-import { useMutation } from "@tanstack/react-query";
 import { loginUser } from "../api/auth";
-import { notifications } from "@mantine/notifications";
-import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
-import { useCookies } from "react-cookie";
 
 export default function Login() {
   const [cookies, setCookie] = useCookies(["currentUser"]);
@@ -70,12 +70,14 @@ export default function Login() {
       >
         <Space h="30px" />
         <Group position="center">
-          <Avatar
-            src={
-              "https://compote.slate.com/images/2f2fc6b0-96b7-4bf7-812a-dcaa8c6ce3d6.gif"
-            }
-            style={{ width: "120px", height: "40px" }}
-          ></Avatar>
+          <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
+            <Avatar
+              src={
+                "https://compote.slate.com/images/2f2fc6b0-96b7-4bf7-812a-dcaa8c6ce3d6.gif"
+              }
+              style={{ width: "140px", height: "50px" }}
+            ></Avatar>
+          </Link>
         </Group>
         <Title order={4} align="center">
           Sign in

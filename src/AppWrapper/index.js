@@ -1,81 +1,47 @@
-import React, { useEffect, useState, useRef } from "react";
 import "../App.css";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import "../Style/menu.css"; // 导入CSS文件
-import { Link } from "react-router-dom";
-import { MdOutlineSubscriptions, MdOutlineVideoLibrary } from "react-icons/md";
-import { BiSolidMicrophone } from "react-icons/bi";
-import { AiFillHome } from "@react-icons/all-files/ai/AiFillHome";
-import { GoHistory } from "@react-icons/all-files/go/GoHistory";
+import "../Style/menu.css";
+import React, { useState, useRef } from "react";
+import { useCookies } from "react-cookie";
+import { useNavigate, Link } from "react-router-dom";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { VscAccount } from "react-icons/vsc";
-import { RiUploadLine } from "react-icons/ri";
-
-import { MdOutlineLocalFireDepartment, MdUpload } from "react-icons/md";
-import { IoMusicalNoteOutline } from "@react-icons/all-files/io5/IoMusicalNoteOutline";
-import { SiYoutubegaming } from "@react-icons/all-files/si/SiYoutubegaming";
-import { ImNewspaper } from "@react-icons/all-files/im/ImNewspaper";
-import { GoTrophy } from "react-icons/go";
-import { GrAddCircle } from "@react-icons/all-files/gr/GrAddCircle";
+import { RiUploadLine, RiMoneyDollarCircleLine } from "react-icons/ri";
+import { MdUpload } from "react-icons/md";
 import { AiOutlineSearch } from "@react-icons/all-files/ai/AiOutlineSearch";
-import { PiFlagThin } from "react-icons/pi";
 import { BiVideoPlus } from "react-icons/bi";
 import { SiYoutubestudio } from "react-icons/si";
-
-import { PiBell } from "react-icons/pi";
-import { GoVideo, GoReport } from "react-icons/go";
-import { RiThumbUpLine, RiMoneyDollarCircleLine } from "react-icons/ri";
 import { IoIosLogIn } from "react-icons/io";
-import { IoSettingsOutline } from "react-icons/io5";
-import { IoCreateOutline } from "react-icons/io5";
-
+import { IoSettingsOutline, IoCreateOutline } from "react-icons/io5";
 import { PiUserSquareThin } from "react-icons/pi";
-
-import { Menu, rem } from "@mantine/core";
-import { UnstyledButton } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
+import { notifications } from "@mantine/notifications";
 import { Dropzone, IMAGE_MIME_TYPE, MIME_TYPES } from "@mantine/dropzone";
-
 import {
-  Container,
+  Menu,
   Grid,
   Button,
   Title,
-  Divider,
   Image,
   Group,
   Space,
   AppShell,
-  Navbar,
   Header,
-  Footer,
-  Aside,
+  UnstyledButton,
   Text,
   MediaQuery,
-  ScrollArea,
   Burger,
   useMantineTheme,
   Input,
   TextInput,
-  NativeSelect,
-  Avatar,
-  Loader,
+  Modal,
 } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
-import { Modal } from "@mantine/core";
 import {
-  addProduct,
   addVideoDetails,
-  addVideoImage,
-  addVideo,
   uploadVideoImage,
   uploadVideo,
   fetchVideos,
 } from "../api/video";
-import { useCookies } from "react-cookie";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
 import SideBar from "../SideBar";
-
-import { notifications } from "@mantine/notifications";
 
 const AppWrapper = ({ children }) => {
   const navigate = useNavigate();
@@ -100,14 +66,9 @@ const AppWrapper = ({ children }) => {
     },
   });
 
-  // // create mutation};
   const createMutation = useMutation({
     mutationFn: addVideoDetails,
     onSuccess: () => {
-      notifications.show({
-        title: "New Video Added",
-        color: "green",
-      });
       close();
       navigate("/studio");
     },
@@ -141,10 +102,6 @@ const AppWrapper = ({ children }) => {
     mutationFn: uploadVideoImage,
     onSuccess: (data) => {
       setThumbnail(data.thumbnail_url);
-      notifications.show({
-        title: "Thumbnail uploaded successfully",
-        color: "yellow",
-      });
     },
     onError: (error) => {
       notifications.show({
@@ -162,10 +119,6 @@ const AppWrapper = ({ children }) => {
     mutationFn: uploadVideo,
     onSuccess: (data) => {
       setVideo(data.video_url);
-      notifications.show({
-        title: "Image uploaded successfully",
-        color: "yellow",
-      });
     },
     onError: (error) => {
       notifications.show({
@@ -179,18 +132,6 @@ const AppWrapper = ({ children }) => {
     console.log(files);
     uploadVideoMutation.mutate(files[0]);
   };
-
-  // useEffect(() => {
-  //   let newList = video ? [...video] : [];
-
-  //   if (searchTerm) {
-  //     newList = newList.filter(
-  //       (i) => i.title.toLowerCase().indexOf(searchTerm.toLowerCase()) >= 0
-  //     );
-  //   }
-
-  //   setCurrentVideo(newList);
-  // }, [video, searchTerm]);
 
   return (
     <AppShell
@@ -333,16 +274,21 @@ const AppWrapper = ({ children }) => {
                       size="xl"
                       width={700}
                       title="Upload videos"
+                      overlayProps={{
+                        backgroundOpacity: 0.55,
+                        blur: 2,
+                      }}
                     >
                       {video && video !== "" ? (
                         <>
                           <Title order={4}>Details</Title>
                           <Group position="apart">
                             <Grid>
-                              <Grid.Col md={12} lg={9} sm={12}>
+                              <Grid.Col md={12} lg={8} sm={12}>
                                 <div className="">
                                   <TextInput
                                     label="Title"
+                                    placeholder="Enter the title at here"
                                     value={title}
                                     onChange={(event) =>
                                       setTitle(event.target.value)
@@ -350,6 +296,7 @@ const AppWrapper = ({ children }) => {
                                   />
                                   <TextInput
                                     label="Description"
+                                    placeholder="Enter the description at here"
                                     value={description}
                                     onChange={(event) =>
                                       setDescription(event.target.value)
@@ -362,8 +309,8 @@ const AppWrapper = ({ children }) => {
                                         src={
                                           "http://localhost:1205/" + thumbnail
                                         }
-                                        width="340px"
-                                        height="220px"
+                                        width="460px"
+                                        height="260px"
                                       />
                                       <Button
                                         color="dark"
@@ -404,7 +351,7 @@ const AppWrapper = ({ children }) => {
                                   </div>
                                 </div>
                               </Grid.Col>
-                              <Grid.Col md={12} lg={3} sm={12}>
+                              <Grid.Col md={12} lg={4} sm={12}>
                                 <Space h={20} />
                                 <Title order={6}>Video Preview</Title>
                                 <Group>
@@ -423,13 +370,7 @@ const AppWrapper = ({ children }) => {
                             </Grid>
                           </Group>
                           <Group position="right">
-                            <Button
-                              mt="15px"
-                              onClick={handleAddNewVideo}
-                              // onClick={() => {
-                              //   handleAddNewVideo.clean();
-                              // }}
-                            >
+                            <Button mt="15px" onClick={handleAddNewVideo}>
                               Publish
                             </Button>
                           </Group>

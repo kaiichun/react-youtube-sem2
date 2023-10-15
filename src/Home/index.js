@@ -1,43 +1,19 @@
-import {
-  ScrollArea,
-  Table,
-  Button,
-  TextInput,
-  Divider,
-  Select,
-  UnstyledButton,
-  LoadingOverlay,
-} from "@mantine/core";
-
-import { SlPencil } from "react-icons/sl";
-import { CiYoutube } from "react-icons/ci";
-import { AiOutlineDelete } from "react-icons/ai";
-
-import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
-import { useState, useMemo } from "react";
-import ReactPlayer from "react-player";
-import { useNavigate, Link } from "react-router-dom";
-import { notifications } from "@mantine/notifications";
-import { useHover } from "@mantine/hooks";
-import { useCookies } from "react-cookie";
-import { fetchVideos, addViews } from "../api/video";
-
 import React from "react";
+import { useCookies } from "react-cookie";
+import { Link } from "react-router-dom";
+import { useQueryClient, useQuery } from "@tanstack/react-query";
 import {
-  Container,
+  UnstyledButton,
   Grid,
   Image,
   Title,
-  Space,
   Card,
   Text,
   Group,
-  Badge,
 } from "@mantine/core";
-import { GoVerified } from "react-icons/go";
-import axios from "axios";
+import { fetchVideos } from "../api/video";
 
-const Home = () => {
+export default function Home() {
   const [cookies] = useCookies(["currentUser"]);
   const { currentUser } = cookies;
   const queryClient = useQueryClient();
@@ -70,10 +46,11 @@ const Home = () => {
                             <>
                               <Image
                                 src={"http://localhost:1205/" + v.thumbnail}
-                                height="200px"
+                                height="220px"
                                 alt="Thumbnail"
                                 style={{
                                   border: 0,
+
                                   borderRadius: "5%",
                                   position: "relative",
                                 }}
@@ -84,7 +61,7 @@ const Home = () => {
                               src={
                                 "https://media.istockphoto.com/id/1147544806/vector/no-thumbnail-image-vector-graphic.jpg?s=170667a&w=0&k=20&c=-r15fTq303g-Do1h-F1jLdxddwkg4ZTtkdQK1XP2sFk="
                               }
-                              height="200px"
+                              height="220px"
                               alt="Thumbnail"
                               style={{
                                 border: 0,
@@ -136,6 +113,4 @@ const Home = () => {
       </Grid>
     </>
   );
-};
-
-export default Home;
+}

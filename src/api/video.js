@@ -1,7 +1,6 @@
 import axios from "axios";
 
 import { API_URL } from "./data";
-import { Title } from "@mantine/core";
 
 export const fetchVideos = async (keyword = "") => {
   const response = await axios({
@@ -19,24 +18,6 @@ export const fetchPersonalVideo = async (token = "") => {
       Authorization: "Bearer " + token,
     },
   });
-  console.log(response.data);
-  return response.data;
-};
-
-export const fetchTrendingVideos = async (token = "") => {
-  const response = await axios({
-    method: "GET",
-    url: API_URL + "/videos/trending",
-    headers: {
-      Authorization: "Bearer " + token,
-    },
-  });
-  console.log(response.data);
-  return response.data;
-};
-
-export const fetchChannels = async () => {
-  const response = await axios.get(API_URL + "/videos/channels");
   return response.data;
 };
 

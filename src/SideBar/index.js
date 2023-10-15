@@ -1,8 +1,9 @@
-// Menu.js
-import "../Style/menu.css"; // 导入CSS文件
-import { Link } from "react-router-dom";
+import "../Style/menu.css";
+import React from "react";
+import { useCookies } from "react-cookie";
+import { useParams, Link } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 import { MdOutlineSubscriptions, MdOutlineVideoLibrary } from "react-icons/md";
-import { BiSolidMicrophone } from "react-icons/bi";
 import { BiChevronDown } from "react-icons/bi";
 import { AiFillHome } from "@react-icons/all-files/ai/AiFillHome";
 import { GoHistory } from "@react-icons/all-files/go/GoHistory";
@@ -13,42 +14,21 @@ import { SiYoutubegaming } from "@react-icons/all-files/si/SiYoutubegaming";
 import { ImNewspaper } from "@react-icons/all-files/im/ImNewspaper";
 import { GoTrophy } from "react-icons/go";
 import { GrAddCircle } from "@react-icons/all-files/gr/GrAddCircle";
-import { AiOutlineSearch } from "@react-icons/all-files/ai/AiOutlineSearch";
 import { IoSettingsOutline } from "@react-icons/all-files/io5/IoSettingsOutline";
 import { PiFlagThin } from "react-icons/pi";
 import { GoReport } from "@react-icons/all-files/go/GoReport";
 import {
   Container,
-  Grid,
   Button,
   Title,
   Divider,
   Image,
   Group,
   Space,
-  UnstyledButton,
-} from "@mantine/core";
-
-import Home from "../Home";
-import { getUser } from "../api/auth";
-import React, { useState, useEffect } from "react";
-import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
-import {
-  AppShell,
   Navbar,
-  Header,
-  Footer,
-  Aside,
-  Text,
-  MediaQuery,
   ScrollArea,
-  Burger,
-  useMantineTheme,
-  Input,
 } from "@mantine/core";
-import { useCookies } from "react-cookie";
-import { SiAsda } from "react-icons/si";
-import { useParams } from "react-router-dom";
+import { getUser } from "../api/auth";
 
 export default function SideBar() {
   const [cookies] = useCookies(["currentUser"]);

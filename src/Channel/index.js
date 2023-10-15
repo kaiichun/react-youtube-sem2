@@ -1,10 +1,9 @@
-import PostAdd from "../Post_Add";
 import { useCookies } from "react-cookie";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { useDisclosure } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
-import { modals } from "@mantine/modals";
 import {
   Container,
   Grid,
@@ -15,33 +14,20 @@ import {
   Image,
   Group,
   Space,
-  AppShell,
-  Navbar,
-  Header,
-  Footer,
-  Aside,
   UnstyledButton,
   Text,
-  Textarea,
-  MediaQuery,
-  ScrollArea,
-  Burger,
-  useMantineTheme,
-  Input,
-  TextInput,
   Tabs,
-  Avatar,
-  Loader,
+  Modal,
 } from "@mantine/core";
-import { fetchPosts } from "../api/post";
 import { fetchUsers, subscribe, unSubscribe } from "../api/auth";
-import { fetchChannels, fetchVideos, getChannel } from "../api/video";
-import { getSpaceUntilMaxLength } from "@testing-library/user-event/dist/utils";
+import { fetchVideos, getChannel } from "../api/video";
+import PostAdd from "../Post_Add";
 
-const Channel = () => {
+export default function Channel() {
   const [cookies] = useCookies(["currentUser"]);
   const { currentUser } = cookies;
   const { id } = useParams();
+  const [opened, { open, close }] = useDisclosure(false);
   const queryClient = useQueryClient();
 
   const { data: v = {} } = useQuery({
@@ -65,10 +51,6 @@ const Channel = () => {
       queryClient.invalidateQueries({
         queryKey: ["users"],
       });
-      notifications.show({
-        title: "subscriber is updated successfully",
-        color: "green",
-      });
     },
     onError: (error) => {
       console.log(error);
@@ -81,9 +63,7 @@ const Channel = () => {
 
   const handleSubscribeUpdate = async () => {
     updateSubscribersMutation.mutate({
-      // id: v.user._id,
       id: id,
-
       token: currentUser ? currentUser.token : "",
     });
   };
@@ -93,10 +73,6 @@ const Channel = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["users"],
-      });
-      notifications.show({
-        title: "unsubscriber successfully",
-        color: "green",
       });
     },
     onError: (error) => {
@@ -110,23 +86,10 @@ const Channel = () => {
 
   const handleUnsubscribeUpdate = async () => {
     updateUnsubscribersMutation.mutate({
-      // id: v.user._id,
       id: id,
-
       token: currentUser ? currentUser.token : "",
     });
   };
-
-  const openModal = () =>
-    modals.openConfirmModal({
-      title: "Please confirm your action",
-      children: (
-        <Text size="sm">Sign in to like videos, comment, and subscribe.</Text>
-      ),
-      labels: { confirm: "Confirm", cancel: "Cancel" },
-      onCancel: () => console.log("Cancel"),
-      onConfirm: () => console.log("Confirmed"),
-    });
 
   return (
     <>
@@ -145,39 +108,95 @@ const Channel = () => {
                       >
                         <img
                           src={"http://localhost:1205/" + v.image}
-                          alt="Login Picture"
+                          alt="Channel Img"
                           style={{
-                            width: "100px",
-                            height: "100px",
+                            width: "120px",
+                            height: "120px",
                             borderRadius: "50%",
                           }}
                         />
                       </UnstyledButton>
                       <div style={{ paddingTop: "2px" }}>
-                        <Text size={18} fw={500}>
+                        <Text size={22} fw={500}>
                           {v.name}
                         </Text>
-                        <Text size={12}>{v.subscribers} subscribers</Text>
+                        <Text size={14}>{v.subscribers} subscribers</Text>
                         <Space h="5px" />
                       </div>
                     </Group>
                     {cookies.currentUser ? (
-                      v && v.user && v.user.subscribedUsers ? (
-                        v.user.subscribedUsers.includes(
-                          cookies.currentUser._id
-                        ) ? (
-                          <Button onClick={handleUnsubscribeUpdate}>
+                      v && v.subscribedUsers ? (
+                        v.subscribedUsers.includes(cookies.currentUser._id) ? (
+                          <Button
+                            variant="filled"
+                            color="gray"
+                            radius="xl"
+                            onClick={handleUnsubscribeUpdate}
+                          >
                             Unsubscribe
                           </Button>
                         ) : (
-                          <Button onClick={handleSubscribeUpdate}>
+                          <Button
+                            variant="filled"
+                            color="dark"
+                            radius="xl"
+                            onClick={handleSubscribeUpdate}
+                          >
                             Subscribe
                           </Button>
                         )
                       ) : null
                     ) : (
-                      <Button onClick={openModal}>Subscribe</Button>
+                      <Button
+                        variant="filled"
+                        color="dark"
+                        radius="xl"
+                        onClick={open}
+                      >
+                        Subscribe
+                      </Button>
                     )}
+                    <Modal
+                      opened={opened}
+                      onClose={close}
+                      title="Authentication"
+                      overlayProps={{
+                        backgroundOpacity: 0.55,
+                        blur: 5,
+                      }}
+                    >
+                      <Group position="center">
+                        <Space h={40} />
+                        <Text size="md">
+                          Sign in to like videos, comment, and subscribe.
+                        </Text>
+                        <Group position="apart">
+                          <Group position="apart">
+                            <Button
+                              variant="subtle"
+                              color="rgba(73, 178, 252, 1)"
+                              component={Link}
+                              to="/signup"
+                              size="xs"
+                              radius="xs"
+                            >
+                              Create account
+                            </Button>
+
+                            <Button
+                              variant="subtle"
+                              color="rgba(73, 178, 252, 1)"
+                              component={Link}
+                              to="/login"
+                              size="xs"
+                              radius="xs"
+                            >
+                              Sign in
+                            </Button>
+                          </Group>
+                        </Group>
+                      </Group>
+                    </Modal>
                   </Group>
 
                   <Space h="20px" />
@@ -294,6 +313,4 @@ const Channel = () => {
       </Tabs>
     </>
   );
-};
-
-export default Channel;
+}

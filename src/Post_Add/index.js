@@ -1,54 +1,22 @@
-import { Dropzone, IMAGE_MIME_TYPE, MIME_TYPES } from "@mantine/dropzone";
 import React, { useMemo, useState } from "react";
-import { LiaPhotoVideoSolid } from "react-icons/lia";
+import { useCookies } from "react-cookie";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { BiEdit } from "react-icons/bi";
-import { RiThumbUpLine, RiThumbDownLine } from "react-icons/ri";
-
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
+import { useDisclosure } from "@mantine/hooks";
+import { notifications } from "@mantine/notifications";
 import {
-  Container,
-  Grid,
   Card,
   Button,
-  Title,
-  Divider,
   Image,
   Group,
   Space,
-  AppShell,
-  Navbar,
-  Header,
-  Footer,
-  Aside,
   UnstyledButton,
   Text,
   Textarea,
-  Modal,
-  MediaQuery,
-  ScrollArea,
-  Burger,
-  useMantineTheme,
-  Input,
-  TextInput,
-  Avatar,
-  Loader,
 } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
-import {
-  addProduct,
-  addVideoDetails,
-  addVideoImage,
-  addVideo,
-  uploadVideoImage,
-  uploadVideo,
-  fetchVideos,
-  deleteVideoAdmin,
-} from "../api/video";
-import { useCookies } from "react-cookie";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useParams } from "react-router-dom";
-import { useNavigate, Link } from "react-router-dom";
-import { notifications } from "@mantine/notifications";
 import {
   addPostDetails,
   deletePost,
@@ -57,15 +25,12 @@ import {
   uploadPostImage,
   updatePost,
 } from "../api/post";
-import { likePost, unlikePost } from "../api/auth";
 
 export default function PostAdd() {
   const navigate = useNavigate();
   const { id } = useParams();
   const [content, setContent] = useState("");
   const [postimage, setPostimage] = useState("");
-  const [opened, { open, close }] = useDisclosure(false);
-  const [video, setVideo] = useState("");
   const [cookies, setCookies, removeCookies] = useCookies(["currentUser"]);
   const { currentUser } = cookies;
   const queryClient = useQueryClient();
@@ -82,7 +47,7 @@ export default function PostAdd() {
         queryKey: ["postcontent"],
       });
       notifications.show({
-        title: "New Video Added",
+        title: currentUser.name + "new post added",
         color: "green",
       });
     },
@@ -111,7 +76,7 @@ export default function PostAdd() {
     mutationFn: updatePost,
     onSuccess: () => {
       notifications.show({
-        title: "Post Edited",
+        title: currentUser.name + "Post is Edited",
         color: "green",
       });
       navigate("/");
@@ -139,13 +104,8 @@ export default function PostAdd() {
     mutationFn: uploadPostImage,
     onSuccess: (data) => {
       setPostimage(data.postimage_url);
-      notifications.show({
-        title: "postimage uploaded successfully",
-        color: "yellow",
-      });
     },
     onError: (error) => {
-      console.log(error);
       notifications.show({
         title: error.response.data.message,
         color: "red",
@@ -164,8 +124,8 @@ export default function PostAdd() {
         queryKey: ["postcontent"],
       });
       notifications.show({
-        title: "Post is Deleted Successfully",
-        color: "grenn",
+        title: currentUser.name + "post is Deleted Successfully",
+        color: "yellow",
       });
     },
   });
@@ -177,8 +137,8 @@ export default function PostAdd() {
         queryKey: ["postcontent"],
       });
       notifications.show({
-        title: "Video is Deleted Successfully",
-        color: "grenn",
+        title: currentUser.name + " video is Deleted Successfully",
+        color: "green",
       });
     },
   });

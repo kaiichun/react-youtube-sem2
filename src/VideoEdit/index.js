@@ -1,25 +1,21 @@
-import React, { useRef, useState, useMemo } from "react";
-
-import axios from "axios";
+import React, { useRef, useState } from "react";
+import { useCookies } from "react-cookie";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { notifications } from "@mantine/notifications";
+import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
 import {
   Container,
   Title,
   Space,
   Card,
   TextInput,
-  NumberInput,
-  Divider,
   Button,
   Group,
   Image,
   LoadingOverlay,
 } from "@mantine/core";
-import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { notifications } from "@mantine/notifications";
-import { useQuery, useMutation } from "@tanstack/react-query";
 import { getVideos, updateVideo, uploadVideoImage } from "../api/video";
-import { useCookies } from "react-cookie";
 
 function VideoEdit() {
   const [cookies] = useCookies(["currentUser"]);
@@ -85,10 +81,6 @@ function VideoEdit() {
     onSuccess: (data) => {
       setThumbnail(data.thumbnail_url);
       setUploading(false);
-      notifications.show({
-        title: "Thumbnail uploaded successfully",
-        color: "yellow",
-      });
     },
     onError: (error) => {
       setUploading(false);
@@ -120,17 +112,15 @@ function VideoEdit() {
         </video>
         <TextInput
           value={title}
-          placeholder="Enter the product name here"
-          label="Name"
-          description="The name of the product"
+          placeholder="Enter the title at here"
+          label="Title"
           onChange={(event) => setTitle(event.target.value)}
         />
         <Space h="20px" />
         <TextInput
           value={description}
-          placeholder="Enter the product name here"
+          placeholder="Enter the description at here"
           label="Description"
-          description="The name of the product"
           onChange={(event) => setDescription(event.target.value)}
         />
         <Space h="20px" />

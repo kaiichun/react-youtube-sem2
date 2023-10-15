@@ -1,52 +1,44 @@
-// App.js
 import "../App.css";
-import { notifications } from "@mantine/notifications";
-import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
-
-import { fetcseos, getVideos, addViews } from "../api/video";
-import {
-  addVideoComment,
-  deleteComment,
-  deleteCommentAdmin,
-  fetchComments,
-  getVideoCommemts,
-} from "../api/comment";
-import axios from "axios";
+import React, { useRef, useState, useMemo } from "react";
 import { useCookies } from "react-cookie";
-import { useNavigate, Link } from "react-router-dom";
-import { Tabs } from "@mantine/core";
+import { useParams, Link } from "react-router-dom";
+import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
+import { RiThumbUpLine, RiThumbDownLine } from "react-icons/ri";
+import { PiShareFatLight } from "react-icons/pi";
+import { AiOutlineDelete } from "react-icons/ai";
+import { VscAccount } from "react-icons/vsc";
+import { notifications } from "@mantine/notifications";
+import { useDisclosure } from "@mantine/hooks";
+import { Modal } from "@mantine/core";
 import {
   Container,
   Space,
   TextInput,
   Card,
   Button,
-  Image,
   Group,
   Grid,
   Text,
   Title,
-  Avatar,
-  Flex,
   ScrollArea,
   UnstyledButton,
   Divider,
 } from "@mantine/core";
-import { RiThumbUpLine, RiThumbDownLine } from "react-icons/ri";
-import { PiShareFatLight } from "react-icons/pi";
-import { AiOutlineDelete } from "react-icons/ai";
-import { VscAccount } from "react-icons/vsc";
-import React, { useRef, useState, useMemo } from "react";
-import { useParams } from "react-router-dom";
 import { subscribe, unSubscribe, likeVideo, unlikeVideo } from "../api/auth";
+import { getVideos, addViews } from "../api/video";
+import {
+  addVideoComment,
+  deleteComment,
+  deleteCommentAdmin,
+  fetchComments,
+} from "../api/comment";
 
 export default function Video({ videoSource }) {
   const [cookies] = useCookies(["currentUser"]);
   const { currentUser } = cookies;
   const { id } = useParams();
-  const [inputValue, setInputValue] = useState("");
+  const [opened, { open, close }] = useDisclosure(false);
   const [comment, setCommet] = useState("");
-  const [subscribedUsers, setSubscribedUsers] = useState("");
   const queryClient = useQueryClient();
   const videoRef = useRef(null);
 
@@ -65,7 +57,6 @@ export default function Video({ videoSource }) {
     queryFn: () => addViews(id),
   });
 
-  // // create mutation};
   const createCommentMutation = useMutation({
     mutationFn: addVideoComment,
     onSuccess: () => {
@@ -99,10 +90,6 @@ export default function Video({ videoSource }) {
       queryClient.invalidateQueries({
         queryKey: ["comments"],
       });
-      notifications.show({
-        title: "Video is Deleted Successfully",
-        color: "grenn",
-      });
     },
   });
 
@@ -113,8 +100,8 @@ export default function Video({ videoSource }) {
         queryKey: ["comments"],
       });
       notifications.show({
-        title: "Admin is Deleted the comment Successfully",
-        color: "grenn",
+        title: currentUser.name + "(Admin) is DELETE the comment Successfully",
+        color: "yellow",
       });
     },
   });
@@ -125,13 +112,8 @@ export default function Video({ videoSource }) {
       queryClient.invalidateQueries({
         queryKey: ["video"],
       });
-      notifications.show({
-        title: "subscriber is updated successfully",
-        color: "green",
-      });
     },
     onError: (error) => {
-      console.log(error);
       notifications.show({
         title: error.response.data.message,
         color: "red",
@@ -151,10 +133,6 @@ export default function Video({ videoSource }) {
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["video"],
-      });
-      notifications.show({
-        title: "unsubscriber successfully",
-        color: "green",
       });
     },
     onError: (error) => {
@@ -180,7 +158,6 @@ export default function Video({ videoSource }) {
       });
     },
     onError: (error) => {
-      console.log(error);
       notifications.show({
         title: error.response.data.message,
         color: "red",
@@ -204,7 +181,6 @@ export default function Video({ videoSource }) {
       });
     },
     onError: (error) => {
-      console.log(error);
       notifications.show({
         title: error.response.data.message,
         color: "red",
@@ -281,47 +257,145 @@ export default function Video({ videoSource }) {
                     vid.user.subscribedUsers.includes(
                       cookies.currentUser._id
                     ) ? (
-                      <Button onClick={handleUnsubscribeUpdate}>
-                        Unsubscribe
+                      <Button
+                        variant="filled"
+                        color="gray"
+                        radius="xl"
+                        onClick={handleUnsubscribeUpdate}
+                      >
+                        Unsubscribed
                       </Button>
                     ) : (
-                      <Button onClick={handleSubscribeUpdate}>Subscribe</Button>
+                      <Button
+                        variant="filled"
+                        color="dark"
+                        radius="xl"
+                        onClick={handleSubscribeUpdate}
+                      >
+                        Subscribe
+                      </Button>
                     )
                   ) : null
                 ) : (
-                  <Button>Subscribe</Button>
+                  <Button
+                    variant="filled"
+                    color="dark"
+                    radius="xl"
+                    onClick={open}
+                  >
+                    Subscribe
+                  </Button>
                 )}
-              </Group>
-              <Group position="right">
-                <Button
-                  variant="transparent"
-                  color="gray"
-                  size="md"
-                  onClick={handleLikeUpdate}
+
+                <Modal
+                  opened={opened}
+                  onClose={close}
+                  title="Authentication"
+                  overlayProps={{
+                    backgroundOpacity: 0.55,
+                    blur: 5,
+                  }}
                 >
-                  <RiThumbUpLine />
-                  {vid.user ? (
-                    <>
-                      {vid.likes.length >= 1000
-                        ? vid.likes.length.toLocaleString()
-                        : vid.likes.length}
-                    </>
-                  ) : (
-                    0
-                  )}
-                </Button>
-                <Button
-                  variant="transparent"
-                  color="gray"
-                  size="md"
-                  onClick={handleUnlikeUpdate}
-                >
-                  <RiThumbDownLine /> Dislike
-                </Button>
-                <Button variant="transparent" color="gray" size="md">
-                  <PiShareFatLight /> Share
-                </Button>
+                  <Group position="center">
+                    <Space h={40} />
+                    <Text size="md">
+                      Sign in to like videos, comment, and subscribe.
+                    </Text>
+                    <Group position="apart">
+                      <Group position="apart">
+                        <Button
+                          variant="subtle"
+                          color="rgba(73, 178, 252, 1)"
+                          component={Link}
+                          to="/signup"
+                          size="xs"
+                          radius="xs"
+                        >
+                          Create account
+                        </Button>
+
+                        <Button
+                          variant="subtle"
+                          color="rgba(73, 178, 252, 1)"
+                          component={Link}
+                          to="/login"
+                          size="xs"
+                          radius="xs"
+                        >
+                          Sign in
+                        </Button>
+                      </Group>
+                    </Group>
+                  </Group>
+                </Modal>
               </Group>
+              {cookies && cookies.currentUser ? (
+                <>
+                  <Group position="right">
+                    <Button
+                      variant="transparent"
+                      color="gray"
+                      size="md"
+                      onClick={handleLikeUpdate}
+                    >
+                      <RiThumbUpLine />
+                      {vid.user ? (
+                        <>
+                          {vid.likes.length >= 1000
+                            ? vid.likes.length.toLocaleString()
+                            : vid.likes.length}
+                        </>
+                      ) : (
+                        0
+                      )}
+                    </Button>
+                    <Button
+                      variant="transparent"
+                      color="gray"
+                      size="md"
+                      onClick={handleUnlikeUpdate}
+                    >
+                      <RiThumbDownLine /> Dislike
+                    </Button>
+                    <Button variant="transparent" color="gray" size="md">
+                      <PiShareFatLight /> Share
+                    </Button>
+                  </Group>
+                </>
+              ) : (
+                <>
+                  <Group position="right">
+                    <Button
+                      variant="transparent"
+                      color="gray"
+                      size="md"
+                      onClick={open}
+                    >
+                      <RiThumbUpLine />{" "}
+                      {vid.user ? (
+                        <>
+                          {vid.likes.length >= 1000
+                            ? vid.likes.length.toLocaleString()
+                            : vid.likes.length}
+                        </>
+                      ) : (
+                        0
+                      )}
+                    </Button>
+                    <Button
+                      variant="transparent"
+                      color="gray"
+                      size="md"
+                      onClick={open}
+                    >
+                      <RiThumbDownLine /> Dislike
+                    </Button>
+                    <Button variant="transparent" color="gray" size="md">
+                      <PiShareFatLight /> Share
+                    </Button>
+                  </Group>
+                </>
+              )}
             </Group>
             <Space h="20px" />
             <Card
@@ -360,7 +434,7 @@ export default function Video({ videoSource }) {
                     <TextInput
                       placeholder="Add a comment..."
                       variant="unstyled"
-                      w={680}
+                      w={580}
                       radius="md"
                       value={comment}
                       onChange={(event) => setCommet(event.target.value)}
@@ -383,11 +457,11 @@ export default function Video({ videoSource }) {
             ) : (
               <>
                 <Group style={{ paddingLeft: "12px" }}>
-                  <VscAccount size="20px" p="0px" />
+                  <VscAccount size="35px" p="0px" />
                   <TextInput
                     placeholder="Add a comment..."
                     variant="unstyled"
-                    w={680}
+                    w={580}
                     radius="md"
                     value={comment}
                     onChange={(event) => setCommet(event.target.value)}
@@ -395,10 +469,7 @@ export default function Video({ videoSource }) {
                   {comment.length > 0 && (
                     <div>
                       <Group position="right">
-                        <Button
-                          style={{ margin: "0px" }}
-                          onClick={handleAddNewComment}
-                        >
+                        <Button style={{ margin: "0px" }} onClick={open}>
                           Comment
                         </Button>
                       </Group>

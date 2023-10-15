@@ -1,31 +1,22 @@
-// App.js
+import { useState } from "react";
+import { useCookies } from "react-cookie";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
+import { notifications } from "@mantine/notifications";
 import {
   Container,
   Space,
   TextInput,
   Card,
   Button,
-  Image,
   Group,
   Grid,
-  PasswordInput,
   Text,
   Title,
   Avatar,
 } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
-import { useState } from "react";
-import { useCookies } from "react-cookie";
-import { notifications } from "@mantine/notifications";
-import {
-  getUser,
-  registerUser,
-  updateUser,
-  uploadProfileImage,
-} from "../api/auth";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { getUser, updateUser, uploadProfileImage } from "../api/auth";
 
 const UserEdit = () => {
   const { id } = useParams();
@@ -35,7 +26,6 @@ const UserEdit = () => {
   const [email, setEmail] = useState(currentUser ? currentUser.email : "");
   const [image, setImage] = useState("");
   const navigate = useNavigate();
-  const [visible, { toggle }] = useDisclosure(false);
   const { isLoading } = useQuery({
     queryKey: ["auth", id],
     queryFn: () => getUser(id),
@@ -50,7 +40,7 @@ const UserEdit = () => {
     mutationFn: updateUser,
     onSuccess: () => {
       notifications.show({
-        title: "User is updated successfully",
+        title: currentUser.name + " your info is updated successfully",
         color: "green",
       });
       navigate("/");
@@ -64,9 +54,7 @@ const UserEdit = () => {
   });
 
   const handleUserUpdate = async (event) => {
-    // 阻止表单默认提交行为
     event.preventDefault();
-    // 使用updateMutation mutation来更新商品信息
     updateUserMutation.mutate({
       id: id,
       data: JSON.stringify({
@@ -82,10 +70,6 @@ const UserEdit = () => {
     mutationFn: uploadProfileImage,
     onSuccess: (data) => {
       setImage(data.image_url);
-      notifications.show({
-        title: "Image uploaded successfully",
-        color: "yellow",
-      });
     },
     onError: (error) => {
       notifications.show({
@@ -104,7 +88,6 @@ const UserEdit = () => {
       <Space h="120px" />
       <Card
         withBorder
-        // shadow="lg"
         p="20px"
         mx="auto"
         sx={{

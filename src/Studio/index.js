@@ -1,39 +1,28 @@
+import { useMemo } from "react";
+import { Link } from "react-router-dom";
+import { useCookies } from "react-cookie";
+import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
+import { SlPencil } from "react-icons/sl";
+import { CiYoutube } from "react-icons/ci";
+import { AiOutlineDelete } from "react-icons/ai";
+import { notifications } from "@mantine/notifications";
 import {
   ScrollArea,
-  Container,
   Title,
-  Table,
   Group,
   Button,
   UnstyledButton,
   Image,
   Space,
-  TextInput,
-  Divider,
-  Grid,
   Text,
   Select,
-  LoadingOverlay,
 } from "@mantine/core";
-
-import { SlPencil } from "react-icons/sl";
-import { CiYoutube } from "react-icons/ci";
-import { AiOutlineDelete } from "react-icons/ai";
-
-import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
-import { useState, useMemo } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import { notifications } from "@mantine/notifications";
-import { useHover } from "@mantine/hooks";
-import { useCookies } from "react-cookie";
 import {
-  fetchVideos,
   deleteVideo,
   updateVideo,
   fetchPersonalVideo,
   deleteVideoAdmin,
 } from "../api/video";
-import { deleteUser } from "../api/auth";
 
 const Studio = () => {
   const [cookies] = useCookies(["currentUser"]);
@@ -59,12 +48,11 @@ const Studio = () => {
         queryKey: ["vid"],
       });
       notifications.show({
-        title: "Video is updated successfully",
+        title: currentUser.name + " video visibility change successfully",
         color: "green",
       });
     },
     onError: (error) => {
-      console.log(error);
       notifications.show({
         title: error.response.data.message,
         color: "red",
@@ -79,8 +67,8 @@ const Studio = () => {
         queryKey: ["vid"],
       });
       notifications.show({
-        title: "Video is Deleted Successfully",
-        color: "grenn",
+        title: currentUser.name + " you is successfully delete video",
+        color: "green",
       });
     },
   });
@@ -92,20 +80,7 @@ const Studio = () => {
         queryKey: ["vid"],
       });
       notifications.show({
-        title: "Video is Deleted Successfully",
-        color: "green",
-      });
-    },
-  });
-
-  const deleteUserMutation = useMutation({
-    mutationFn: deleteUser,
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["vid"],
-      });
-      notifications.show({
-        title: "is Deleted Successfully",
+        title: currentUser.name + "(Admin) is successfully delete video",
         color: "green",
       });
     },
@@ -169,7 +144,7 @@ const Studio = () => {
                       </td>
                     )}
 
-                    <td width={"500px"}>
+                    <td width={"650px"}>
                       <Group position="left">
                         {v.thumbnail && v.thumbnail !== "" ? (
                           <>
@@ -190,7 +165,9 @@ const Studio = () => {
                         )}
 
                         <div>
-                          <Text fw={700}>{v.title}</Text>
+                          <Text fw={700} fz={14}>
+                            {v.title}
+                          </Text>
                           <Space h="10px" />
                           <Group>
                             <Button

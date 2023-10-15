@@ -1,11 +1,16 @@
-// App.js
+import { useState } from "react";
+import { useCookies } from "react-cookie";
+import { Link, useNavigate } from "react-router-dom";
+import { useMutation } from "@tanstack/react-query";
+import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
+import { useDisclosure } from "@mantine/hooks";
+import { notifications } from "@mantine/notifications";
 import {
   Container,
   Space,
   TextInput,
   Card,
   Button,
-  Image,
   Group,
   Grid,
   PasswordInput,
@@ -13,13 +18,6 @@ import {
   Title,
   Avatar,
 } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
-import { Link, useNavigate } from "react-router-dom";
-import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
-import { useState } from "react";
-import { useMutation } from "@tanstack/react-query";
-import { useCookies } from "react-cookie";
-import { notifications } from "@mantine/notifications";
 import { registerUser, uploadProfileImage } from "../api/auth";
 
 const SignUp = () => {
@@ -39,7 +37,6 @@ const SignUp = () => {
       setCookie("currentUser", user, {
         maxAge: 60 * 60 * 24 * 60, // expire in 14 days
       });
-      // redirect to home
       navigate("/");
     },
     onError: (error) => {
@@ -77,10 +74,6 @@ const SignUp = () => {
     mutationFn: uploadProfileImage,
     onSuccess: (data) => {
       setImage(data.image_url);
-      notifications.show({
-        title: "Image uploaded successfully",
-        color: "yellow",
-      });
     },
     onError: (error) => {
       notifications.show({
@@ -99,7 +92,6 @@ const SignUp = () => {
       <Space h="120px" />
       <Card
         withBorder
-        // shadow="lg"
         p="20px"
         mx="auto"
         sx={{
@@ -108,12 +100,14 @@ const SignUp = () => {
       >
         <Space h="20px" />
         <Group position="center">
-          <Avatar
-            src={
-              "https://compote.slate.com/images/2f2fc6b0-96b7-4bf7-812a-dcaa8c6ce3d6.gif"
-            }
-            style={{ width: "120px", height: "40px" }}
-          ></Avatar>
+          <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
+            <Avatar
+              src={
+                "https://compote.slate.com/images/2f2fc6b0-96b7-4bf7-812a-dcaa8c6ce3d6.gif"
+              }
+              style={{ width: "140px", height: "50px" }}
+            ></Avatar>
+          </Link>
         </Group>
         <Title order={4} align="center">
           Create a Google Account
@@ -125,13 +119,24 @@ const SignUp = () => {
             <Group position="center">
               {image && image !== "" ? (
                 <>
-                  <Image
-                    src={"http://localhost:1205/" + image}
-                    style={{ borderRadius: "50%", width: "130px" }}
-                  />
-                  <Button color="dark" mt="15px" onClick={() => setImage("")}>
-                    Remove Image
-                  </Button>
+                  <Group>
+                    <img
+                      src={"http://localhost:1205/" + image}
+                      style={{
+                        borderRadius: "50%",
+                        width: "100px",
+                        height: "100px",
+                      }}
+                    />
+                    <Button
+                      color="dark"
+                      mt="15px"
+                      size="xs"
+                      onClick={() => setImage("")}
+                    >
+                      Remove Image
+                    </Button>
+                  </Group>
                 </>
               ) : (
                 <Dropzone

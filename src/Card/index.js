@@ -1,45 +1,20 @@
-import {
-  ScrollArea,
-  Table,
-  Button,
-  TextInput,
-  Divider,
-  Select,
-  UnstyledButton,
-  LoadingOverlay,
-} from "@mantine/core";
-
-import { SlPencil } from "react-icons/sl";
-import { CiYoutube } from "react-icons/ci";
-import { AiOutlineDelete } from "react-icons/ai";
-
-import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
-import { useState, useMemo } from "react";
-import ReactPlayer from "react-player";
-import { useNavigate, Link } from "react-router-dom";
-import { notifications } from "@mantine/notifications";
-import { useHover } from "@mantine/hooks";
-// import Header from "../Header";
+import React, { useMemo } from "react";
 import { useCookies } from "react-cookie";
-import { fetchVideos } from "../api/video";
-
-import React from "react";
+import { Link } from "react-router-dom";
+import { useQueryClient, useQuery } from "@tanstack/react-query";
 import {
-  Container,
   Grid,
   Image,
   Title,
-  Space,
+  UnstyledButton,
   Card,
   Text,
   Group,
-  Badge,
 } from "@mantine/core";
-import { GoVerified } from "react-icons/go";
+import { fetchVideos } from "../api/video";
 
-const VideoCard = () => {
+export default function VideoCard() {
   const [cookies] = useCookies(["currentUser"]);
-  const { hovered, ref } = useHover();
   const { currentUser } = cookies;
   const queryClient = useQueryClient();
 
@@ -122,6 +97,4 @@ const VideoCard = () => {
       </Grid>
     </>
   );
-};
-
-export default VideoCard;
+}
