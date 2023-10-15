@@ -1,5 +1,4 @@
 import axios from "axios";
-
 import { API_URL } from "./data";
 
 export const loginUser = async (data) => {
