@@ -107,7 +107,7 @@ export default function Channel() {
                         variant="transparent"
                       >
                         <img
-                          src={"http://localhost:1205/" + v.image}
+                          src={"http://10.1.104.3/" + v.image}
                           alt="Channel Img"
                           style={{
                             width: "120px",
@@ -239,9 +239,7 @@ export default function Channel() {
                                 {v.thumbnail && v.thumbnail !== "" ? (
                                   <>
                                     <Image
-                                      src={
-                                        "http://localhost:1205/" + v.thumbnail
-                                      }
+                                      src={"http://10.1.104.3/" + v.thumbnail}
                                       height="200px"
                                       alt="Thumbnail"
                                       style={{

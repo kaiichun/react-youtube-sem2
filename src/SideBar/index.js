@@ -83,7 +83,7 @@ export default function SideBar() {
               <Link style={{ textDecoration: "none", color: "inherit" }}>
                 <div className="item">
                   <img
-                    src={"http://localhost:1205/" + cookies.currentUser.image}
+                    src={"http://10.1.104.3/" + cookies.currentUser.image}
                     alt="Login Picture"
                     className="Channel-Icon"
                     style={{
@@ -112,7 +112,7 @@ export default function SideBar() {
                           >
                             <div className="item">
                               <img
-                                src={"http://localhost:1205/" + user.image}
+                                src={"http://10.1.104.3/" + user.image}
                                 alt="Login Picture"
                                 className="Channel-Icon"
                                 style={{

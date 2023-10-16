@@ -116,7 +116,7 @@ function VideoEdit() {
         {thumbnail && thumbnail !== "" ? (
           <>
             <Image
-              src={"http://localhost:1205/" + thumbnail}
+              src={"http://10.1.104.3/" + thumbnail}
               width="100%"
               height="50vh"
             />

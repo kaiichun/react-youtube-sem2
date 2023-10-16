@@ -50,7 +50,7 @@ export default function VideoCard() {
                         }}
                       >
                         <Image
-                          src={"http://localhost:1205/" + v.thumbnail}
+                          src={"http://10.1.104.3/" + v.thumbnail}
                           height="200px"
                           alt="Thumbnail"
                           style={{

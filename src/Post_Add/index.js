@@ -160,7 +160,7 @@ export default function PostAdd() {
             <div style={{ width: "700px" }}>
               <Group>
                 <img
-                  src={"http://localhost:1205/" + cookies.currentUser.image}
+                  src={"http://10.1.104.3/" + cookies.currentUser.image}
                   alt="Login Picture"
                   style={{
                     width: "36px",
@@ -192,7 +192,7 @@ export default function PostAdd() {
                 <Group>
                   <div>
                     <Image
-                      src={"http://localhost:1205/" + postimage}
+                      src={"http://10.1.104.3/" + postimage}
                       width="100%"
                       height="220px"
                     />
@@ -255,7 +255,7 @@ export default function PostAdd() {
                       <Space h="15px" />
                       {v.postimage && (
                         <img
-                          src={"http://localhost:1205/" + v.postimage}
+                          src={"http://10.1.104.3/" + v.postimage}
                           alt="Post Image"
                           style={{
                             width: "100%",

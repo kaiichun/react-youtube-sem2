@@ -214,7 +214,7 @@ export default function Video({ videoSource }) {
               {vid._id === id ? (
                 <video ref={videoRef} controls className="video-player">
                   <source
-                    src={"http://localhost:1205/" + vid.video}
+                    src={"http://10.1.104.3/" + vid.video}
                     type="video/mp4"
                     frameborder="0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -236,7 +236,7 @@ export default function Video({ videoSource }) {
                       variant="transparent"
                     >
                       <img
-                        src={"http://localhost:1205/" + vid.user.image}
+                        src={"http://10.1.104.3/" + vid.user.image}
                         alt="Login Picture"
                         style={{
                           width: "46px",
@@ -429,7 +429,7 @@ export default function Video({ videoSource }) {
               <>
                 <Group style={{ paddingLeft: "12px" }}>
                   <img
-                    src={"http://localhost:1205/" + cookies.currentUser.image}
+                    src={"http://10.1.104.3/" + cookies.currentUser.image}
                     alt="Login Picture"
                     style={{
                       width: "38px",
@@ -497,7 +497,7 @@ export default function Video({ videoSource }) {
                   <Group position="apart">
                     <Group>
                       <img
-                        src={"http://localhost:1205/" + com.user.image}
+                        src={"http://10.1.104.3/" + com.user.image}
                         alt="Login Picture"
                         style={{
                           width: "38px",

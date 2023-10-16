@@ -45,7 +45,7 @@ export default function Home() {
                           {v.thumbnail && v.thumbnail !== "" ? (
                             <>
                               <Image
-                                src={"http://localhost:1205/" + v.thumbnail}
+                                src={"http://10.1.104.3/" + v.thumbnail}
                                 height="220px"
                                 alt="Thumbnail"
                                 style={{
@@ -74,7 +74,7 @@ export default function Home() {
 
                         <Group position="left">
                           <img
-                            src={"http://localhost:1205/" + v.user.image}
+                            src={"http://10.1.104.3/" + v.user.image}
                             alt="Profile Picture"
                             style={{
                               width: "36px",
