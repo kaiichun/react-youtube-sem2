@@ -211,15 +211,17 @@ export default function Video({ videoSource }) {
         <Grid.Col>
           <div>
             <Group>
-              <video ref={videoRef} controls className="video-player">
-                <source
-                  src={"http://localhost:1205/" + vid.video}
-                  type="video/mp4"
-                  frameborder="0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowfullscreen
-                />
-              </video>
+              {vid._id === id ? (
+                <video ref={videoRef} controls className="video-player">
+                  <source
+                    src={"http://localhost:1205/" + vid.video}
+                    type="video/mp4"
+                    frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen
+                  />
+                </video>
+              ) : null}
             </Group>
             <Space h="10px" />
             <Title size={24}> {vid.title}</Title>
@@ -390,7 +392,12 @@ export default function Video({ videoSource }) {
                     >
                       <RiThumbDownLine /> Dislike
                     </Button>
-                    <Button variant="transparent" color="gray" size="md">
+                    <Button
+                      variant="transparent"
+                      color="gray"
+                      size="md"
+                      onClick={open}
+                    >
                       <PiShareFatLight /> Share
                     </Button>
                   </Group>

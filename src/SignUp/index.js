@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useCookies } from "react-cookie";
 import { Link, useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
-import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
 import { useDisclosure } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
 import {
@@ -18,7 +17,7 @@ import {
   Title,
   Avatar,
 } from "@mantine/core";
-import { registerUser, uploadProfileImage } from "../api/auth";
+import { registerUser } from "../api/auth";
 
 const SignUp = () => {
   const [cookies, setCookie] = useCookies(["currentUser"]);
@@ -26,7 +25,6 @@ const SignUp = () => {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   const [confirmPassword, setConfirmPassword] = useState();
-  const [image, setImage] = useState("");
   const navigate = useNavigate();
   const [visible, { toggle }] = useDisclosure(false);
 
@@ -46,7 +44,7 @@ const SignUp = () => {
       });
     },
   });
-  // handle submit
+
   const handleSubmit = () => {
     if (!name || !email || !password || !confirmPassword) {
       notifications.show({
@@ -64,27 +62,9 @@ const SignUp = () => {
           name: name,
           email: email,
           password: password,
-          image: image,
         })
       );
     }
-  };
-
-  const uploadMutation = useMutation({
-    mutationFn: uploadProfileImage,
-    onSuccess: (data) => {
-      setImage(data.image_url);
-    },
-    onError: (error) => {
-      notifications.show({
-        title: error.response.data.message,
-        color: "red",
-      });
-    },
-  });
-
-  const handleImageUpload = (files) => {
-    uploadMutation.mutate(files[0]);
   };
 
   return (
@@ -115,45 +95,6 @@ const SignUp = () => {
         <Text align="center">Enter your details</Text>
         <Space h="20px" />
         <Grid gutter={20}>
-          <Grid.Col span={12}>
-            <Group position="center">
-              {image && image !== "" ? (
-                <>
-                  <Group>
-                    <img
-                      src={"http://localhost:1205/" + image}
-                      style={{
-                        borderRadius: "50%",
-                        width: "100px",
-                        height: "100px",
-                      }}
-                    />
-                    <Button
-                      color="dark"
-                      mt="15px"
-                      size="xs"
-                      onClick={() => setImage("")}
-                    >
-                      Remove Image
-                    </Button>
-                  </Group>
-                </>
-              ) : (
-                <Dropzone
-                  multiple={false}
-                  accept={IMAGE_MIME_TYPE}
-                  onDrop={(files) => {
-                    handleImageUpload(files);
-                  }}
-                  style={{ borderRadius: "50%", width: "130px" }}
-                >
-                  <Title placeholder="Name" order={6} align="center" py="20px">
-                    Click to upload image
-                  </Title>
-                </Dropzone>
-              )}
-            </Group>
-          </Grid.Col>
           <Grid.Col span={6}>
             <TextInput
               value={name}

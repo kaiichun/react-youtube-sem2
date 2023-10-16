@@ -26,7 +26,6 @@ function VideoEdit() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [thumbnail, setThumbnail] = useState("");
-  const [video, setVideo] = useState("");
   const [uploading, setUploading] = useState(false);
   const { isLoading } = useQuery({
     queryKey: ["videos", id],
@@ -35,7 +34,6 @@ function VideoEdit() {
       setTitle(data.title);
       setDescription(data.description);
       setThumbnail(data.thumbnail);
-      setVideo(data.video);
     },
   });
 
@@ -69,7 +67,6 @@ function VideoEdit() {
       data: JSON.stringify({
         title: title,
         description: description,
-        video: video,
         thumbnail: thumbnail,
       }),
       token: currentUser ? currentUser.token : "",
@@ -101,15 +98,6 @@ function VideoEdit() {
       <Space h="50px" />
       <Card withBorder shadow="md" p="20px">
         <LoadingOverlay visible={isLoading} />
-        <video ref={videoRef} controls className="video-player">
-          <source
-            src={"http://localhost:1205/" + video}
-            type="video/mp4"
-            frameborder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowfullscreen
-          />
-        </video>
         <TextInput
           value={title}
           placeholder="Enter the title at here"

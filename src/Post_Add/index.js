@@ -1,12 +1,13 @@
 import React, { useMemo, useState } from "react";
-import { useCookies } from "react-cookie";
-import { useParams, useNavigate, Link } from "react-router-dom";
-import { RiDeleteBin6Line } from "react-icons/ri";
-import { BiEdit } from "react-icons/bi";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
+import { Dropzone, IMAGE_MIME_TYPE, MIME_TYPES } from "@mantine/dropzone";
 import { useDisclosure } from "@mantine/hooks";
+import { useCookies } from "react-cookie";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { notifications } from "@mantine/notifications";
+import { RiDeleteBin6Line } from "react-icons/ri";
+import { VscAccount } from "react-icons/vsc";
+import { BiEdit } from "react-icons/bi";
 import {
   Card,
   Button,
@@ -47,7 +48,7 @@ export default function PostAdd() {
         queryKey: ["postcontent"],
       });
       notifications.show({
-        title: currentUser.name + "new post added",
+        title: currentUser.name + " new post is added",
         color: "green",
       });
     },
@@ -76,7 +77,7 @@ export default function PostAdd() {
     mutationFn: updatePost,
     onSuccess: () => {
       notifications.show({
-        title: currentUser.name + "Post is Edited",
+        title: currentUser.name + " post is Edited",
         color: "green",
       });
       navigate("/");
@@ -124,7 +125,7 @@ export default function PostAdd() {
         queryKey: ["postcontent"],
       });
       notifications.show({
-        title: currentUser.name + "post is Deleted Successfully",
+        title: currentUser.name + " post is Deleted Successfully",
         color: "yellow",
       });
     },
@@ -137,7 +138,7 @@ export default function PostAdd() {
         queryKey: ["postcontent"],
       });
       notifications.show({
-        title: currentUser.name + " video is Deleted Successfully",
+        title: currentUser.name + " post is Deleted Successfully",
         color: "green",
       });
     },
@@ -237,123 +238,155 @@ export default function PostAdd() {
       )}
       <Space h="30px" />
 
-      {posts && posts.length > 0 ? (
-        posts
-          .filter((f) => f.user._id === id)
-          .map((v) => {
-            return (
-              <>
-                <Group position="center">
-                  <Card radius="md" withBorder style={{ width: "700px" }}>
-                    <div style={{ paddingTop: "8px", paddingLeft: "0px" }}>
-                      <Text size={18}>
-                        <strong>{v.content}</strong>
-                      </Text>
-                    </div>
-                    <Space h="15px" />
-                    {v.postimage && (
-                      <img
-                        src={"http://localhost:1205/" + v.postimage}
-                        alt="Login Picture"
-                        style={{
-                          width: "100%",
-                          height: "500px",
-                          borderRadius: "1%",
-                        }}
-                      />
-                    )}
-                    <Space h="20px" />
-                    <Text fz="xs" c="dimmed">
-                      {v.createdAt}
-                    </Text>
-                    <Group position="right">
-                      {isAdmin && (
-                        <>
-                          {cookies &&
-                            cookies.currentUser &&
-                            cookies.currentUser._id === id &&
-                            cookies.currentUser.role === "admin" && (
-                              <>
-                                <UnstyledButton
-                                  component={Link}
-                                  to={"/post_edit/" + v._id}
-                                >
-                                  <BiEdit
-                                    style={{ width: "20px", height: "20px" }}
-                                  />
-                                </UnstyledButton>
-                              </>
-                            )}
-
-                          <Link
-                            style={{
-                              textDecoration: "none",
-                              color: "inherit",
-                            }}
-                            onClick={() => {
-                              deleteAdminPostMutation.mutate({
-                                id: v._id,
-                                token: currentUser?.token || "",
-                              });
-                            }}
-                          >
-                            <RiDeleteBin6Line
-                              style={{
-                                width: "24px",
-                                height: "24px",
-                                paddingTop: "4px",
-                              }}
-                            />
-                          </Link>
-                        </>
+      {cookies && cookies.currentUser && cookies.currentUser._id ? (
+        <div>
+          {posts && posts.length > 0 ? (
+            posts
+              .filter((post) => post && post.user && post.user._id === id)
+              .map((v) => (
+                <div key={v._id}>
+                  <Group position="center">
+                    <Card radius="md" withBorder style={{ width: "700px" }}>
+                      <div style={{ paddingTop: "8px", paddingLeft: "0px" }}>
+                        <Text size={18}>
+                          <strong>{v.content}</strong>
+                        </Text>
+                      </div>
+                      <Space h="15px" />
+                      {v.postimage && (
+                        <img
+                          src={"http://localhost:1205/" + v.postimage}
+                          alt="Post Image"
+                          style={{
+                            width: "100%",
+                            height: "500px",
+                            borderRadius: "1%",
+                          }}
+                        />
                       )}
-
-                      {cookies &&
-                        cookies.currentUser &&
-                        cookies.currentUser._id === id &&
-                        cookies.currentUser.role === "user" && (
+                      <Space h="20px" />
+                      <Text fz="xs" c="dimmed">
+                        {v.createdAt}
+                      </Text>
+                      <Group position="right">
+                        {isAdmin && (
                           <>
-                            <UnstyledButton
-                              component={Link}
-                              to={"/post_edit/" + v._id}
-                            >
-                              <BiEdit
-                                style={{ width: "20px", height: "20px" }}
-                              />
-                            </UnstyledButton>
-                            <Link
-                              style={{
-                                textDecoration: "none",
-                                color: "inherit",
-                              }}
-                              onClick={() => {
-                                deletePostMutation.mutate({
-                                  id: v._id,
-                                  token: currentUser ? currentUser.token : "",
-                                });
-                              }}
-                            >
-                              <RiDeleteBin6Line
-                                style={{
-                                  width: "24px",
-                                  height: "24px",
-                                  paddingTop: "4px",
-                                }}
-                              />
-                            </Link>
+                            {cookies.currentUser._id === id &&
+                              cookies.currentUser.role === "admin" && (
+                                <>
+                                  <UnstyledButton
+                                    component={Link}
+                                    to={"/post_edit/" + v._id}
+                                  >
+                                    <BiEdit
+                                      style={{ width: "20px", height: "20px" }}
+                                    />
+                                  </UnstyledButton>
+                                  <Link
+                                    style={{
+                                      textDecoration: "none",
+                                      color: "inherit",
+                                    }}
+                                    onClick={() => {
+                                      deleteAdminPostMutation.mutate({
+                                        id: v._id,
+                                        token: currentUser?.token || "",
+                                      });
+                                    }}
+                                  >
+                                    <RiDeleteBin6Line
+                                      style={{
+                                        width: "24px",
+                                        height: "24px",
+                                        paddingTop: "4px",
+                                      }}
+                                    />
+                                  </Link>
+                                </>
+                              )}
                           </>
                         )}
-                    </Group>
-                  </Card>
-                </Group>
-                <Space h="30px" />
-              </>
-            );
-          })
+                        {cookies.currentUser._id === id &&
+                          cookies.currentUser.role === "user" && (
+                            <>
+                              <UnstyledButton
+                                component={Link}
+                                to={"/post_edit/" + v._id}
+                              >
+                                <BiEdit
+                                  style={{ width: "20px", height: "20px" }}
+                                />
+                              </UnstyledButton>
+                              <Link
+                                style={{
+                                  textDecoration: "none",
+                                  color: "inherit",
+                                }}
+                                onClick={() => {
+                                  deletePostMutation.mutate({
+                                    id: v._id,
+                                    token: currentUser ? currentUser.token : "",
+                                  });
+                                }}
+                              >
+                                <RiDeleteBin6Line
+                                  style={{
+                                    width: "24px",
+                                    height: "24px",
+                                    paddingTop: "4px",
+                                  }}
+                                />
+                              </Link>
+                            </>
+                          )}
+                      </Group>
+                    </Card>
+                  </Group>
+                  <Space h="30px" />
+                </div>
+              ))
+          ) : (
+            <Group position="center">
+              <Text size={16}>No Post</Text>
+            </Group>
+          )}
+        </div>
       ) : (
         <>
+          {" "}
           <Group position="center">
-            <Text size={16}>No Post</Text>
+            <Space h={300} />
+
+            <div>
+              <Text size={16}>
+                Sign in to see more post, like videos, comment, and subscribe.
+              </Text>
+              <Space h={20} />
+              <Group position="center">
+                <Button
+                  component={Link}
+                  to="/login"
+                  variant="outline"
+                  radius="xl"
+                  size="sm"
+                  leftIcon={<VscAccount size="20px" p="0px" />}
+                  style={{
+                    fontStyle: "bolder",
+                    padding: "10px 10px",
+
+                    fontWeight: "700",
+                    width: "100px",
+                    backgroundColor: "transparent",
+                    border: "1px solid #E9ECEF",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "1px",
+                  }}
+                >
+                  Sign in
+                </Button>
+              </Group>
+            </div>
           </Group>
         </>
       )}
