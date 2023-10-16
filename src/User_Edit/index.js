@@ -114,7 +114,7 @@ const UserEdit = () => {
               {image && image !== "" ? (
                 <>
                   <img
-                    src={"http://localhost:1205/" + image}
+                    src={"http://10.1.104.3/" + image}
                     style={{
                       borderRadius: "50%",
                       width: "100px",
