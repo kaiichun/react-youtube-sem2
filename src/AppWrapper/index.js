@@ -544,7 +544,6 @@ const AppWrapper = ({ children }) => {
                               // clear the currentUser cookie to logout
                               removeCookies("currentUser");
                               navigate("/login");
-                              console.log("User logged out");
                             }}
                           >
                             <Group>

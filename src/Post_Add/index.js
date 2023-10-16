@@ -48,7 +48,7 @@ export default function PostAdd() {
         queryKey: ["postcontent"],
       });
       notifications.show({
-        title: currentUser.name + " new post is added",
+        title: currentUser.name + " new post added",
         color: "green",
       });
     },
@@ -273,37 +273,35 @@ export default function PostAdd() {
                           <>
                             {cookies.currentUser._id === id &&
                               cookies.currentUser.role === "admin" && (
-                                <>
-                                  <UnstyledButton
-                                    component={Link}
-                                    to={"/post_edit/" + v._id}
-                                  >
-                                    <BiEdit
-                                      style={{ width: "20px", height: "20px" }}
-                                    />
-                                  </UnstyledButton>
-                                  <Link
-                                    style={{
-                                      textDecoration: "none",
-                                      color: "inherit",
-                                    }}
-                                    onClick={() => {
-                                      deleteAdminPostMutation.mutate({
-                                        id: v._id,
-                                        token: currentUser?.token || "",
-                                      });
-                                    }}
-                                  >
-                                    <RiDeleteBin6Line
-                                      style={{
-                                        width: "24px",
-                                        height: "24px",
-                                        paddingTop: "4px",
-                                      }}
-                                    />
-                                  </Link>
-                                </>
+                                <UnstyledButton
+                                  component={Link}
+                                  to={"/post_edit/" + v._id}
+                                >
+                                  <BiEdit
+                                    style={{ width: "20px", height: "20px" }}
+                                  />
+                                </UnstyledButton>
                               )}
+                            <Link
+                              style={{
+                                textDecoration: "none",
+                                color: "inherit",
+                              }}
+                              onClick={() => {
+                                deleteAdminPostMutation.mutate({
+                                  id: v._id,
+                                  token: currentUser?.token || "",
+                                });
+                              }}
+                            >
+                              <RiDeleteBin6Line
+                                style={{
+                                  width: "24px",
+                                  height: "24px",
+                                  paddingTop: "4px",
+                                }}
+                              />
+                            </Link>
                           </>
                         )}
                         {cookies.currentUser._id === id &&
