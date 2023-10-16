@@ -117,7 +117,7 @@ const Studio = () => {
                             variant="transparent"
                           >
                             <img
-                              src={"http://10.1.104.3/" + v.user.image}
+                              src={"http://10.1.104.3:1205/" + v.user.image}
                               alt="Login Picture"
                               style={{
                                 width: "50px",
@@ -149,7 +149,7 @@ const Studio = () => {
                         {v.thumbnail && v.thumbnail !== "" ? (
                           <>
                             <Image
-                              src={"http://10.1.104.3/" + v.thumbnail}
+                              src={"http://10.1.104.3:1205/" + v.thumbnail}
                               width="140px"
                               height="78px"
                             />
