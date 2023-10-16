@@ -306,9 +306,7 @@ const AppWrapper = ({ children }) => {
                                   {thumbnail && thumbnail !== "" ? (
                                     <>
                                       <Image
-                                        src={
-                                          "http://localhost:1205/" + thumbnail
-                                        }
+                                        src={"http://10.1.104.3/" + thumbnail}
                                         width="460px"
                                         height="260px"
                                       />
@@ -357,7 +355,7 @@ const AppWrapper = ({ children }) => {
                                 <Group>
                                   <video ref={videoRef} controls height="180">
                                     <source
-                                      src={"http://localhost:1205/" + video}
+                                      src={"http://10.1.104.3/" + video}
                                       type="video/mp4"
                                       frameborder="0"
                                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -434,8 +432,7 @@ const AppWrapper = ({ children }) => {
                         >
                           <img
                             src={
-                              "http://localhost:1205/" +
-                              cookies.currentUser.image
+                              "http://10.1.104.3/" + cookies.currentUser.image
                             }
                             alt="Login Picture"
                             style={{
@@ -451,8 +448,7 @@ const AppWrapper = ({ children }) => {
                           <Group>
                             <img
                               src={
-                                "http://localhost:1205/" +
-                                cookies.currentUser.image
+                                "http://10.1.104.3/" + cookies.currentUser.image
                               }
                               alt="Login Picture"
                               style={{
