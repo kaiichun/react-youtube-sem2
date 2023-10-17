@@ -135,8 +135,12 @@ const Studio = () => {
                             />
                           </UnstyledButton>
                           <div>
-                            {v.user.name}
-                            <br />
+                            {v && v.user && v.user.name ? (
+                              <Text size="sm" fw={500}>
+                                {v.user.name}
+                              </Text>
+                            ) : null}
+
                             <small>
                               {v ? (
                                 <>
