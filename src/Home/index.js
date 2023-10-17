@@ -74,7 +74,10 @@ export default function Home() {
 
                         <Group position="left">
                           <img
-                            src={"http://10.1.104.3:1205/" + v.user.image}
+                            src={
+                              "http://10.1.104.3:1205/" +
+                              (v.user ? v.user.image : null)
+                            }
                             alt="Profile Picture"
                             style={{
                               width: "36px",
