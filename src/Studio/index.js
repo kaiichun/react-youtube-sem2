@@ -147,7 +147,7 @@ const Studio = () => {
                                   {Number(v.user.subscribers).toLocaleString()}
                                 </>
                               ) : (
-                                <>0 (0)</>
+                                <>0</>
                               )}{" "}
                               subscribers{" "}
                             </small>
