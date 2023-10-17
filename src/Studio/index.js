@@ -192,9 +192,9 @@ const Studio = () => {
                               disabled={
                                 cookies &&
                                 cookies.currentUser &&
-                                cookies.currentUser._id !== v &&
+                                v &&
                                 v.user &&
-                                v.user._id
+                                cookies.currentUser._id !== v.user._id
                               }
                               style={{
                                 textDecoration: "none",
@@ -291,9 +291,9 @@ const Studio = () => {
                           disabled={
                             cookies &&
                             cookies.currentUser &&
-                            cookies.currentUser._id !== v &&
+                            v &&
                             v.user &&
-                            v.user._id
+                            cookies.currentUser._id !== v.user._id
                           }
                           data={[
                             {
