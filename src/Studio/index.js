@@ -113,11 +113,19 @@ const Studio = () => {
                         <Group>
                           <UnstyledButton
                             component={Link}
-                            to={"/channel/" + v.user._id}
+                            to={
+                              v && v.user && v.user._id
+                                ? "/channel/" + v.user._id
+                                : "/"
+                            }
                             variant="transparent"
                           >
                             <img
-                              src={"http://10.1.104.3:1205/" + v.user.image}
+                              src={
+                                v && v.user && v.user.image
+                                  ? "http://10.1.104.3:1205/" + v.user.image
+                                  : ""
+                              }
                               alt="Login Picture"
                               style={{
                                 width: "50px",
@@ -180,7 +188,9 @@ const Studio = () => {
                               disabled={
                                 cookies &&
                                 cookies.currentUser &&
-                                cookies.currentUser._id !== v.user._id
+                                cookies.currentUser._id !== v &&
+                                v.user &&
+                                v.user._id
                               }
                               style={{
                                 textDecoration: "none",
@@ -277,7 +287,9 @@ const Studio = () => {
                           disabled={
                             cookies &&
                             cookies.currentUser &&
-                            cookies.currentUser._id !== v.user._id
+                            cookies.currentUser._id !== v &&
+                            v.user &&
+                            v.user._id
                           }
                           data={[
                             {

@@ -95,7 +95,7 @@ export default function Channel() {
     <>
       {users
         ? users
-            .filter((f) => f._id === id)
+            .filter((f) => f && f._id === id)
             .map((v) => {
               return (
                 <>
@@ -217,7 +217,10 @@ export default function Channel() {
           <Grid className="abc">
             {videos ? (
               videos
-                .filter((f) => f.user._id === id && f.status === "Publish")
+                .filter(
+                  (f) =>
+                    f && f.user && f.user._id === id && f.status === "Publish"
+                )
                 .map((v) => {
                   return (
                     <>

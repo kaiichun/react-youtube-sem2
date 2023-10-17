@@ -233,9 +233,7 @@ export default function PostAdd() {
             </Group>
           </Card>
         </Group>
-      ) : (
-        <></>
-      )}
+      ) : null}
       <Space h="30px" />
 
       {cookies && cookies.currentUser && cookies.currentUser._id ? (
