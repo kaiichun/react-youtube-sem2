@@ -142,7 +142,7 @@ const Studio = () => {
                             ) : null}
 
                             <small>
-                              {v ? (
+                              {v && v.user && v.user.subscribers ? (
                                 <>
                                   {Number(v.user.subscribers).toLocaleString()}
                                 </>
