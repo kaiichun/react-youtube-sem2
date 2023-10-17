@@ -76,7 +76,9 @@ export default function Home() {
                           <img
                             src={
                               "http://10.1.104.3:1205/" +
-                              (v.user ? v.user.image : null)
+                              (v && v.user && v.user.image
+                                ? v.user.image
+                                : null)
                             }
                             alt="Profile Picture"
                             style={{
