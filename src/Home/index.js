@@ -50,7 +50,6 @@ export default function Home() {
                                 alt="Thumbnail"
                                 style={{
                                   border: 0,
-
                                   borderRadius: "5%",
                                   position: "relative",
                                 }}
@@ -75,10 +74,9 @@ export default function Home() {
                         <Group position="left">
                           <img
                             src={
-                              "http://10.1.104.3:1205/" +
-                              (v && v.user && v.user.image
-                                ? v.user.image
-                                : null)
+                              v && v.user && v.user.image
+                                ? "http://10.1.104.3:1205/" + v.user.image
+                                : ""
                             }
                             alt="Profile Picture"
                             style={{
@@ -93,9 +91,11 @@ export default function Home() {
                             }}
                           >
                             <Title order={4}>{v.title}</Title>
-                            <Text size="sm" color="dimmed">
-                              {v.user.name}
-                            </Text>
+                            {v && v.user && v.user.name ? (
+                              <Text size="sm" color="dimmed">
+                                {v.user.name}
+                              </Text>
+                            ) : null}
                             <Text size="sm" color="dimmed">
                               {v ? (
                                 <>{Number(v.views).toLocaleString()} views </>
