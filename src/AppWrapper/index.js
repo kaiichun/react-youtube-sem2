@@ -13,7 +13,7 @@ import { SiYoutubestudio } from "react-icons/si";
 import { IoIosLogIn } from "react-icons/io";
 import { IoSettingsOutline, IoCreateOutline } from "react-icons/io5";
 import { PiUserSquareThin } from "react-icons/pi";
-import { useDisclosure } from "@mantine/hooks";
+import { useDisclosure, useViewportSize } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
 import { Dropzone, IMAGE_MIME_TYPE, MIME_TYPES } from "@mantine/dropzone";
 import {
@@ -57,6 +57,7 @@ const AppWrapper = ({ children }) => {
   const [cookies, setCookies, removeCookies] = useCookies(["currentUser"]);
   const { currentUser } = cookies;
   const queryClient = useQueryClient();
+  const { width } = useViewportSize();
 
   const searchVideoMutation = useMutation({
     mutationFn: fetchVideos,
@@ -137,7 +138,7 @@ const AppWrapper = ({ children }) => {
     <AppShell
       navbarOffsetBreakpoint="sm"
       asideOffsetBreakpoint="sm"
-      navbar={opened ? null : <SideBar />}
+      navbar={opened || width > 769 ? <SideBar /> : null}
       header={
         <Header height={{ base: 50, md: 70 }} p="md" style={{ border: 0 }}>
           <div
