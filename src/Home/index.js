@@ -90,7 +90,13 @@ export default function Home() {
                               paddingTop: "18px",
                             }}
                           >
-                            <Title order={4}>{v.title}</Title>
+                            {v.title.length > 10 ? (
+                              <Title order={4}>
+                                {v.title.slice(0, 20) + "..."}
+                              </Title>
+                            ) : (
+                              <Title order={4}>{v.title}</Title>
+                            )}
                             {v && v.user && v.user.name ? (
                               <Text size="sm" color="dimmed">
                                 {v.user.name}
