@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useCookies } from "react-cookie";
 import { Link, useNavigate } from "react-router-dom";
-import { useMutation } from "@tanstack/react-query";
+import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { useDisclosure } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
 import {
@@ -26,6 +26,7 @@ const SignUp = () => {
   const [password, setPassword] = useState();
   const [confirmPassword, setConfirmPassword] = useState();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [visible, { toggle }] = useDisclosure(false);
 
   // sign up mutation
@@ -34,6 +35,9 @@ const SignUp = () => {
     onSuccess: (user) => {
       setCookie("currentUser", user, {
         maxAge: 60 * 60 * 24 * 60, // expire in 14 days
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["signup"],
       });
       navigate("/");
     },
