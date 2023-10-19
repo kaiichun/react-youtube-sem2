@@ -138,7 +138,7 @@ const AppWrapper = ({ children }) => {
     <AppShell
       navbarOffsetBreakpoint="sm"
       asideOffsetBreakpoint="sm"
-      navbar={opened || width > 769 ? <SideBar /> : null}
+      navbar={opened || width > 420 ? <SideBar /> : null}
       header={
         <Header height={{ base: 50, md: 70 }} p="md" style={{ border: 0 }}>
           <div
@@ -163,10 +163,10 @@ const AppWrapper = ({ children }) => {
                 >
                   <div className="logo">
                     <Image
-                      src="https://images.squarespace-cdn.com/content/v1/5b9808cd3c3a53afb68435ff/1542829121850-V9O5PVS46SH13CE7OF88/star_spangled_yoodle_1920x600_v2.gif"
+                      src="https://static.vecteezy.com/system/resources/previews/018/930/572/non_2x/youtube-logo-youtube-icon-transparent-free-png.png"
                       alt="YouTube Logo"
-                      width="100px"
-                      height="40px"
+                      width="56px"
+                      height="30px"
                     />
                   </div>
                 </Link>
